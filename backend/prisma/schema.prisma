@@ -19,5 +19,19 @@ model User{
   password String
   createdAt DateTime @default(now())
 
-  metas Meta[]
+  metas Goal[]
+}
+
+// Modelo Metas
+model Goal{
+  id String @id @default(uuid())
+  title String
+  totalAmount Decimal
+  currency String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  finishedAt DateTime @default(now())
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
 }

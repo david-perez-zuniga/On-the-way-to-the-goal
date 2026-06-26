@@ -12,26 +12,38 @@ datasource db {
   provider = "postgresql"
 }
 
-// Modelo Usuario
+// Model User
 model User{
   id String @id @default(uuid())
   email String @unique
   password String
   createdAt DateTime @default(now())
 
-  metas Goal[]
+  Goal Goal[]
 }
 
-// Modelo Metas
+// Model Goal
 model Goal{
   id String @id @default(uuid())
   title String
   totalAmount Decimal
   currency String
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  finishedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  finishedAt DateTime?
 
   userId String
   user User @relation(fields: [userId], references: [id])
+
+  Payment Payment[]
+}
+
+// Model Payment
+model Payment{
+  id String @id @default(uuid())
+  deposit Decimal
+  depositDate DateTime @default(now())
+
+  goalId String
+  goal Goal @relation(fields: [goalId], references: [id])
 }

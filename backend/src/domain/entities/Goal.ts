@@ -16,4 +16,11 @@ export class Goal {
   public get isCompleted(): boolean {
     return this.currentAmount >= this.totalAmount;
   }
+
+    // Método que devuelva el porcentaje de avance (de 0 a 100).
+  public get progressPercentage(): number {
+    if (this.totalAmount === 0) return 0;
+      const percentage = (this.currentAmount / this.totalAmount) * 100;
+      return Math.round(percentage);
+    }
 }

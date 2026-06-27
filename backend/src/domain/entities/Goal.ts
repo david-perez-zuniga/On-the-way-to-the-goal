@@ -11,3 +11,9 @@ export class Goal {
     public updatedAt: Date,
     public finishedAt: Date | null
   ) {}
+
+    // Método que evalúa si la meta ya se cumplió
+  public get isCompleted(): boolean {
+    return this.currentAmount >= this.totalAmount;
+  }
+}

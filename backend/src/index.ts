@@ -1,10 +1,13 @@
 import express from 'express';
+import { goalRoutes } from './infrastructure/routes/goalRoutes';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware para que Express entienda JSON en el body de las peticiones
 app.use(express.json());
+
+app.use('/api/goals', goalRoutes)
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: '¡Servidor de Camino a la Meta funcionando!' });

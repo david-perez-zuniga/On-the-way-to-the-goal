@@ -1,9 +1,11 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient, Prisma } from '../db';
 import { type IGoalRepository } from '../../domain/repositories/IGoalRepository';
 import { Goal } from '../../domain/entities/Goal';
 
 // Instanciamos el cliente de Prisma
-const prisma = new PrismaClient();
+const adapter = new PrismaPg();
+const prisma = new PrismaClient({ adapter });
 
 export class PrismaGoalRepository implements IGoalRepository {
   

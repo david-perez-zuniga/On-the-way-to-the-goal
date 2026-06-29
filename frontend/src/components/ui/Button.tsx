@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from 'react'
 import styles from './Button.module.css'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'ghost' | 'gradient' | 'gradientPrimary'
+  variant?: 'primary' | 'ghost' | 'gradient' | 'gradientPrimary' | 'gradientLogin'
   size?: 'sm' | 'md' | 'lg'
   icon?: string
 }

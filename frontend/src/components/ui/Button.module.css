@@ -87,6 +87,30 @@
   transform: scale(0.95);
 }
 
+.gradientLogin {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-container));
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--color-on-primary);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-label-md);
+  font-size: var(--fs-label-md);
+  letter-spacing: 0.01em;
+  font-weight: 600;
+  width: 100%;
+  justify-content: center;
+}
+
+.gradientLogin:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 103, 127, 0.3);
+  filter: brightness(1.1);
+}
+
+.gradientLogin:active {
+  transform: scale(0.96);
+}
+
 .icon {
   font-size: 1.25rem;
   line-height: 1;

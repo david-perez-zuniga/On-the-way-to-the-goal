@@ -2,10 +2,9 @@ import { type Request, type Response } from 'express';
 import { CreateGoalUseCase } from '../../application/use-cases/CreateGoalUseCase';
 
 export class GoalController {
-  // Inyectamos el Caso de Uso en el controlador
+  // Inyectamos el caso de uso en el controlador
   constructor(private readonly createGoalUseCase: CreateGoalUseCase) {}
-
-  // Usamos una arrow function para no perder el contexto de 'this'
+  // Usamos una arrow function para no perder el contexto 
   public createGoal = async (req: Request, res: Response): Promise<void> => {
     try {
       const {title, totalAmount, currency, userId} = req.body

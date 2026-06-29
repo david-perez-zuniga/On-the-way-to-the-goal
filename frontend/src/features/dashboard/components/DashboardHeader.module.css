@@ -1,0 +1,78 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: rgba(247, 249, 251, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4rem;
+  padding-left: var(--spacing-container-padding-mobile);
+  padding-right: var(--spacing-container-padding-mobile);
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .inner {
+    padding-left: var(--spacing-container-padding-desktop);
+    padding-right: var(--spacing-container-padding-desktop);
+  }
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.title {
+  font-family: var(--font-headline-md);
+  font-size: var(--fs-headline-md);
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  .title {
+    font-family: var(--font-headline-lg-mobile);
+    font-size: var(--fs-headline-lg-mobile);
+  }
+}
+
+.accountBtn {
+  color: var(--color-on-surface-variant);
+  padding: 0.5rem;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: opacity 0.2s, background-color 0.2s;
+  font-size: 1.5rem;
+}
+
+.accountBtn:hover {
+  opacity: 0.8;
+  background: var(--color-surface-container);
+}
+
+.accountBtn:active {
+  transform: scale(0.95);
+}

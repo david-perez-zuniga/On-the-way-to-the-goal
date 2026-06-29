@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import heroImg from '../../../assets/imagendeladingpage.png'
 import GlassCard from '../../../components/ui/GlassCard'
 import ProgressCard from '../../../components/ui/ProgressCard'
@@ -5,6 +6,8 @@ import Button from '../../../components/ui/Button'
 import styles from './HeroSection.module.css'
 
 export default function HeroSection() {
+  const navigate = useNavigate()
+
   return (
     <section className={styles.hero}>
       <div className={styles.container}>
@@ -21,7 +24,7 @@ export default function HeroSection() {
               </p>
             </div>
             <div className={styles.cta}>
-              <Button variant="gradient" icon="arrow_forward">
+              <Button variant="gradient" icon="arrow_forward" onClick={() => navigate('/registro')}>
                 Logra tus metas ahora
               </Button>
             </div>

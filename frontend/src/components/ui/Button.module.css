@@ -63,6 +63,30 @@
   font-size: var(--fs-body-lg);
 }
 
+.gradientPrimary {
+  background: linear-gradient(135deg, var(--color-primary-container), var(--color-primary));
+  box-shadow: 0 4px 15px rgba(0, 209, 255, 0.3);
+  color: var(--color-on-primary);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-label-md);
+  font-size: var(--fs-label-md);
+  letter-spacing: 0.01em;
+  font-weight: 600;
+  justify-content: center;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.gradientPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 209, 255, 0.5);
+}
+
+.gradientPrimary:active {
+  transform: scale(0.95);
+}
+
 .icon {
   font-size: 1.25rem;
   line-height: 1;

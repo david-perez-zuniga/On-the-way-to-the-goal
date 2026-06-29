@@ -1,0 +1,61 @@
+.field {
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.field:focus-within {
+  transform: scale(1.02);
+}
+
+.label {
+  display: block;
+  font-family: var(--font-label-md);
+  font-size: var(--fs-label-md);
+  line-height: var(--lh-label-md);
+  letter-spacing: 0.01em;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 0.25rem;
+  transition: color 0.2s;
+}
+
+.field:focus-within .label {
+  color: var(--color-primary);
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-outline-variant);
+  padding: 0.5rem 0;
+  transition: border-color 0.2s;
+}
+
+.field:focus-within .inputWrapper {
+  border-bottom-color: var(--color-primary);
+}
+
+.icon {
+  color: var(--color-outline);
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--color-on-surface);
+  font-family: var(--font-body-md);
+  font-size: var(--fs-body-md);
+  line-height: var(--lh-body-md);
+}
+
+.input::placeholder {
+  color: rgba(108, 121, 127, 0.5);
+}
+
+.input:focus {
+  outline: none;
+}

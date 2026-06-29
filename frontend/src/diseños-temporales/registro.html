@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html class="light" lang="es" style="">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Registro - On The Way To The Goal</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <!-- Tailwind Config -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-primary": "#4cd6ff",
+            "outline-variant": "#bbc9cf",
+            "inverse-surface": "#2d3133",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-fixed-variant": "#2f2ebe",
+            "primary-fixed": "#b7eaff",
+            "on-tertiary-fixed": "#07006c",
+            "on-secondary-container": "#007237",
+            "on-primary": "#ffffff",
+            "secondary-container": "#3fff8b",
+            "inverse-on-surface": "#eff1f3",
+            "surface-container-low": "#f2f4f6",
+            "error": "#ba1a1a",
+            "surface-tint": "#00677f",
+            "surface": "#f7f9fb",
+            "surface-container": "#eceef0",
+            "on-secondary-fixed": "#00210b",
+            "error-container": "#ffdad6",
+            "on-tertiary-container": "#3737c6",
+            "surface-variant": "#e0e3e5",
+            "surface-container-highest": "#e0e3e5",
+            "tertiary": "#494bd6",
+            "secondary-fixed-dim": "#00e475",
+            "tertiary-fixed-dim": "#c0c1ff",
+            "on-secondary": "#ffffff",
+            "on-primary-fixed": "#001f28",
+            "secondary-fixed": "#62ff96",
+            "background": "#f7f9fb",
+            "surface-dim": "#d8dadc",
+            "on-surface-variant": "#3c494e",
+            "on-background": "#191c1e",
+            "on-error-container": "#93000a",
+            "on-surface": "#191c1e",
+            "on-secondary-fixed-variant": "#005226",
+            "surface-bright": "#f7f9fb",
+            "tertiary-container": "#b9baff",
+            "surface-container-high": "#e6e8ea",
+            "primary": "#00677f",
+            "secondary": "#006d35",
+            "tertiary-fixed": "#e1e0ff",
+            "primary-fixed-dim": "#4cd6ff",
+            "primary-container": "#00d1ff",
+            "on-error": "#ffffff",
+            "outline": "#6c797f",
+            "on-tertiary": "#ffffff",
+            "on-primary-container": "#00566a",
+            "on-primary-fixed-variant": "#004e60"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "unit": "8px",
+            "stack-lg": "2rem",
+            "container-padding-mobile": "1.25rem",
+            "container-padding-desktop": "2.5rem",
+            "stack-md": "1rem",
+            "stack-sm": "0.5rem",
+            "gutter": "1.5rem"
+          },
+          "fontFamily": {
+            "label-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "label-md": ["Inter"],
+            "headline-md": ["Montserrat"],
+            "display-lg": ["Montserrat"],
+            "headline-lg-mobile": ["Montserrat"],
+            "headline-lg": ["Montserrat"],
+            "body-md": ["Inter"]
+          },
+          "fontSize": {
+            "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+            "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+            "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-gradient {
+      background: linear-gradient(135deg, #00d1ff 0%, #00677f 100%);
+      box-shadow: 0 4px 15px rgba(0, 209, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .btn-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 209, 255, 0.5);
+    }
+
+    input:focus {
+      outline: none;
+      border-bottom-color: #00d1ff !important;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+
+<body class="bg-surface text-on-surface font-body-md overflow-x-hidden min-h-screen flex flex-col">
+  <!-- TopAppBar -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-surface-variant/30">
+    <div
+      class="flex justify-between items-center h-16 px-container-padding-mobile md:px-container-padding-desktop max-w-7xl mx-auto w-full">
+      <div class="flex items-center gap-2">
+        <img alt="Logo de On The Way To The Goal" class="w-8 h-8 object-contain"
+          src="https://lh3.googleusercontent.com/aida/AP1WRLtUo3LLjCUkQSX4KJbBzIMX2fle5BDQh0QbDBf0im3jyr-DUqQ8l1InpNLpwB2cBR-COs07ERaePK3k6arpLf6WQ1dmzKEZNZNuLBPDqubQ5b26McxSgl6S1wmo0F-yUHE5MIe3ipzhVu5pixps5_kk44XU9OqzSDyeK2bnckhqKxY33p9XZEr-lcl8xTX2BBJ97O7toUGURQ7VnHOS9UQ3GetAHPjGkgh9Z7x3FZl096sHsEvZWjjfX11A">
+        <span class="font-headline-md text-headline-md font-bold text-primary hidden sm:block">On The Way To The
+          Goal</span>
+      </div>
+      <div class="flex items-center gap-2 md:gap-4">
+        <button
+          class="bg-primary text-on-primary px-5 md:px-6 py-2.5 rounded-full font-bold shadow-lg hover:scale-105 active:scale-95 transition-all">Iniciar
+          sesión</button>
+      </div>
+    </div>
+  </header>
+  <!-- Main Content: Sign Up Form -->
+  <main class="flex-grow flex items-center justify-center pt-24 pb-12 px-container-padding-mobile">
+    <div class="w-full max-w-md">
+      <!-- Form Card -->
+      <div class="glass-card rounded-xl p-8 md:p-10 border border-white/20">
+        <div class="text-center mb-stack-lg">
+          <img alt="Brand Logo" class="w-16 h-16 mx-auto mb-4 object-contain"
+            src="https://lh3.googleusercontent.com/aida/AP1WRLtUo3LLjCUkQSX4KJbBzIMX2fle5BDQh0QbDBf0im3jyr-DUqQ8l1InpNLpwB2cBR-COs07ERaePK3k6arpLf6WQ1dmzKEZNZNuLBPDqubQ5b26McxSgl6S1wmo0F-yUHE5MIe3ipzhVu5pixps5_kk44XU9OqzSDyeK2bnckhqKxY33p9XZEr-lcl8xTX2BBJ97O7toUGURQ7VnHOS9UQ3GetAHPjGkgh9Z7x3FZl096sHsEvZWjjfX11A">
+          <h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">Comienza tu viaje</h1>
+          <p class="text-on-surface-variant font-body-md">Transforma tus metas financieras hoy mismo.</p>
+        </div>
+        <form class="space-y-6" onsubmit="event.preventDefault();">
+          <!-- Email Field -->
+          <div class="relative group">
+            <label
+              class="block text-label-md font-label-md text-on-surface-variant mb-1 group-focus-within:text-primary transition-colors"
+              for="email">Correo electrónico</label>
+            <div
+              class="flex items-center border-b border-outline-variant py-2 group-focus-within:border-primary transition-all">
+              <span class="material-symbols-outlined text-outline mr-3">mail</span>
+              <input
+                class="w-full bg-transparent border-none focus:ring-0 p-0 text-on-surface placeholder:text-outline/50 font-body-md"
+                id="email" name="email" placeholder="tu@email.com" required="" type="email">
+            </div>
+          </div>
+          <!-- Password Field -->
+          <div class="relative group">
+            <label
+              class="block text-label-md font-label-md text-on-surface-variant mb-1 group-focus-within:text-primary transition-colors"
+              for="password">Contraseña</label>
+            <div
+              class="flex items-center border-b border-outline-variant py-2 group-focus-within:border-primary transition-all">
+              <span class="material-symbols-outlined text-outline mr-3">lock</span>
+              <input
+                class="w-full bg-transparent border-none focus:ring-0 p-0 text-on-surface placeholder:text-outline/50 font-body-md"
+                id="password" name="password" placeholder="••••••••" required="" type="password">
+            </div>
+          </div>
+          <!-- Submit Button -->
+          <div class="pt-4">
+            <button
+              class="w-full py-4 px-6 rounded-lg text-on-primary font-label-md text-label-md btn-gradient flex items-center justify-center gap-2 group"
+              type="submit">
+              <span class="">Registrarse</span>
+              <span
+                class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+            </button>
+          </div>
+        </form>
+        <div class="mt-8 text-center">
+          <p class="text-on-surface-variant font-label-md">
+            ¿Ya tienes una cuenta?
+            <a class="text-primary font-bold hover:underline ml-1" href="#">Inicia sesión</a>
+          </p>
+        </div>
+      </div>
+      <!-- Motivational Micro-copy -->
+      <div class="mt-8 text-center opacity-60">
+        <p class="font-label-sm text-label-sm text-outline-variant flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">security</span>
+          Tus datos están protegidos con cifrado de nivel bancario.
+        </p>
+      </div>
+    </div>
+  </main>
+  <!-- Footer -->
+
+  <script>
+    // Micro-interactions for inputs
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('focus', () => {
+        input.parentElement.parentElement.classList.add('scale-[1.02]');
+      });
+      input.addEventListener('blur', () => {
+        input.parentElement.parentElement.classList.remove('scale-[1.02]');
+      });
+    });
+
+    // Simple button active state logic
+    const registerBtn = document.querySelector('button[type="submit"]');
+    registerBtn.addEventListener('click', () => {
+      registerBtn.classList.add('scale-95');
+      setTimeout(() => registerBtn.classList.remove('scale-95'), 100);
+    });
+  </script>
+
+
+</body>
+
+</html>

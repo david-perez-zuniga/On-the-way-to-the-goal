@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="light" lang="es" style="">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>On The Way To The Goal | Rastreador de Hitos Financieros</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline-variant": "#bbc9cf",
+            "surface-container-low": "#f2f4f6",
+            "surface-bright": "#f7f9fb",
+            "on-background": "#191c1e",
+            "secondary-fixed": "#62ff96",
+            "on-tertiary": "#ffffff",
+            "primary": "#00677f",
+            "on-primary": "#ffffff",
+            "on-error": "#ffffff",
+            "secondary-container": "#3fff8b",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed-variant": "#005226",
+            "surface-variant": "#e0e3e5",
+            "background": "#f7f9fb",
+            "inverse-primary": "#4cd6ff",
+            "tertiary-fixed-dim": "#c0c1ff",
+            "on-tertiary-fixed": "#07006c",
+            "error": "#ba1a1a",
+            "secondary-fixed-dim": "#00e475",
+            "on-secondary": "#ffffff",
+            "secondary": "#006d35",
+            "surface-dim": "#d8dadc",
+            "on-tertiary-container": "#3737c6",
+            "surface-tint": "#00677f",
+            "inverse-surface": "#2d3133",
+            "on-primary-container": "#00566a",
+            "on-surface-variant": "#3c494e",
+            "on-tertiary-fixed-variant": "#2f2ebe",
+            "on-secondary-container": "#007237",
+            "tertiary-fixed": "#e1e0ff",
+            "surface-container-highest": "#e0e3e5",
+            "surface-container": "#eceef0",
+            "primary-fixed": "#b7eaff",
+            "primary-fixed-dim": "#4cd6ff",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary-fixed": "#00210b",
+            "tertiary": "#494bd6",
+            "error-container": "#ffdad6",
+            "on-surface": "#191c1e",
+            "on-primary-fixed": "#001f28",
+            "inverse-on-surface": "#eff1f3",
+            "outline": "#6c797f",
+            "surface-container-high": "#e6e8ea",
+            "primary-container": "#00d1ff",
+            "surface": "#f7f9fb",
+            "tertiary-container": "#b9baff",
+            "on-primary-fixed-variant": "#004e60"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "container-padding-desktop": "2.5rem",
+            "gutter": "1.5rem",
+            "stack-lg": "2rem",
+            "stack-md": "1rem",
+            "unit": "8px",
+            "container-padding-mobile": "1.25rem",
+            "stack-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "body-md": ["Inter"],
+            "headline-md": ["Montserrat"],
+            "label-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "label-sm": ["Inter"],
+            "display-lg": ["Montserrat"],
+            "headline-lg": ["Montserrat"],
+            "headline-lg-mobile": ["Montserrat"]
+          },
+          "fontSize": {
+            "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+            "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+            "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-glow {
+      box-shadow: 0 4px 14px 0 rgba(0, 103, 127, 0.3);
+    }
+
+    .btn-glow:hover {
+      box-shadow: 0 6px 20px rgba(0, 103, 127, 0.4);
+    }
+
+    .hero-gradient {
+      background: radial-gradient(circle at top right, rgba(0, 209, 255, 0.08), transparent 45%),
+        radial-gradient(circle at bottom left, rgba(73, 75, 214, 0.08), transparent 45%),
+        linear-gradient(to bottom right, #f7f9fb, #ffffff);
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden hero-gradient min-h-screen flex flex-col">
+  <!-- TopNavBar -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-surface-variant/30">
+    <div
+      class="flex justify-between items-center h-16 px-container-padding-mobile md:px-container-padding-desktop max-w-7xl mx-auto w-full">
+      <div class="flex items-center gap-2">
+        <img alt="Logo de On The Way To The Goal" class="w-8 h-8 object-contain"
+          src="https://lh3.googleusercontent.com/aida/AP1WRLtUo3LLjCUkQSX4KJbBzIMX2fle5BDQh0QbDBf0im3jyr-DUqQ8l1InpNLpwB2cBR-COs07ERaePK3k6arpLf6WQ1dmzKEZNZNuLBPDqubQ5b26McxSgl6S1wmo0F-yUHE5MIe3ipzhVu5pixps5_kk44XU9OqzSDyeK2bnckhqKxY33p9XZEr-lcl8xTX2BBJ97O7toUGURQ7VnHOS9UQ3GetAHPjGkgh9Z7x3FZl096sHsEvZWjjfX11A">
+        <span class="font-headline-md text-headline-md font-bold text-primary hidden sm:block">On The Way To The
+          Goal</span>
+      </div>
+      <div class="flex items-center gap-2 md:gap-4">
+        <button class="text-primary font-bold px-4 py-2 hover:opacity-80 transition-opacity">Iniciar sesión</button>
+        <button
+          class="bg-primary text-on-primary px-5 md:px-6 py-2.5 rounded-full font-bold shadow-lg hover:scale-105 active:scale-95 transition-all">Registrarse</button>
+      </div>
+    </div>
+  </header>
+  <main class="flex-grow pt-16">
+    <!-- Hero Section -->
+    <section class="min-h-[calc(100vh-4rem)] flex items-center">
+      <div class="max-w-7xl mx-auto px-container-padding-mobile md:px-container-padding-desktop py-12 md:py-16 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div class="flex flex-col gap-stack-lg order-2 lg:order-1 text-center lg:text-left">
+            <div class="space-y-6">
+              <div class="flex justify-center lg:justify-start">
+
+              </div>
+              <h1 class="font-display-lg text-4xl md:text-5xl lg:text-display-lg text-on-background tracking-tight">
+                On The Way To <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-tertiary">The Goal</span>
+              </h1>
+              <p class="text-body-lg font-body-lg text-on-surface-variant max-w-lg mx-auto lg:mx-0">
+                Rastrea tus ahorros y alcanza tus metas más rápido con nuestro seguimiento visual de progreso.
+                Experimenta tu crecimiento financiero a través de impresionantes visualizaciones 3D.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-4 pt-4 justify-center lg:justify-start">
+              <button
+                class="bg-gradient-to-r from-primary to-tertiary text-on-primary px-8 py-4 rounded-xl font-bold text-body-md btn-glow hover:scale-105 transition-all flex items-center gap-2">Logra
+                tus metas ahora<span class="material-symbols-outlined">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+          <div class="relative flex justify-center items-center order-1 lg:order-2 px-4 lg:px-0">
+            <!-- Decorative background elements -->
+            <div class="absolute -z-10 w-[110%] h-[110%] bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
+            <div
+              class="glass-card p-2 md:p-4 rounded-[2rem] transform rotate-2 hover:rotate-0 transition-transform duration-700 w-full max-w-[500px]">
+              <img alt="Ilustración 3D de seguimiento de metas"
+                class="w-full h-auto rounded-2xl shadow-2xl aspect-square object-cover"
+                src="https://lh3.googleusercontent.com/aida/AP1WRLtteVz4JSb_VhvT26C9lxu-F1ul2XEipehWMG5sKrPF4yLAlTThACLO0X3ArY9gHHQeHrS-sf4Z98W1FXUm2hq4NzaUE3g8eXNnP_oORdBa9Ey8a6rWEKTjSYjkpWV3s5fz1ei7bK0Wqz1VdZe9yxQ4B8-uR7874eW5ltzbwGSnlX2PAMXOxyk5OGKSRzfljt7ENiF5epgGMGqR0FA7fvnBRk5p0229UVYh423vF8QaIoR3CMuZS6_oFjeO">
+              <div
+                class="absolute -bottom-4 -right-2 md:-bottom-6 md:-right-6 glass-card p-4 md:p-6 rounded-2xl flex flex-col gap-1 border-primary/20 shadow-xl w-48 md:w-64">
+                <div class="flex justify-between items-center gap-4">
+                  <span class="text-label-md font-label-md text-on-surface-variant truncate">Fondo de Vacaciones</span>
+                  <span class="text-label-md font-bold text-primary">78%</span>
+                </div>
+                <div class="w-full h-2 bg-surface-container rounded-full overflow-hidden mt-1">
+                  <div class="h-full bg-primary w-[78%] rounded-full shadow-[0_0_10px_rgba(0,103,127,0.4)]"></div>
+                </div>
+                <p class="text-label-sm font-label-sm text-on-surface-variant mt-2">$7,800 / $10,000</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Features Section (Placeholder for structure) -->
+    <section class="py-24 bg-white/30">
+      <div class="max-w-7xl mx-auto px-container-padding-mobile md:px-container-padding-desktop">
+        <!-- Contenido adicional opcional aquí -->
+      </div>
+    </section>
+  </main>
+
+
+</body>
+
+</html>

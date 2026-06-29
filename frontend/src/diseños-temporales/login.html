@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="light" lang="es" style="">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Iniciar Sesión - On The Way To The Goal</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface": "#f7f9fb",
+            "outline": "#6c797f",
+            "on-background": "#191c1e",
+            "on-surface-variant": "#3c494e",
+            "on-tertiary-fixed-variant": "#2f2ebe",
+            "primary-fixed-dim": "#4cd6ff",
+            "primary": "#00677f",
+            "outline-variant": "#bbc9cf",
+            "surface-dim": "#d8dadc",
+            "secondary-container": "#3fff8b",
+            "surface-container-high": "#e6e8ea",
+            "on-secondary-container": "#007237",
+            "error": "#ba1a1a",
+            "inverse-primary": "#4cd6ff",
+            "surface-container": "#eceef0",
+            "on-primary": "#ffffff",
+            "on-primary-fixed": "#001f28",
+            "on-tertiary-fixed": "#07006c",
+            "tertiary": "#494bd6",
+            "primary-fixed": "#b7eaff",
+            "tertiary-fixed": "#e1e0ff",
+            "secondary-fixed-dim": "#00e475",
+            "on-surface": "#191c1e",
+            "inverse-surface": "#2d3133",
+            "surface-variant": "#e0e3e5",
+            "surface-tint": "#00677f",
+            "on-tertiary": "#ffffff",
+            "secondary": "#006d35",
+            "on-error-container": "#93000a",
+            "surface-container-highest": "#e0e3e5",
+            "surface-container-lowest": "#ffffff",
+            "primary-container": "#00d1ff",
+            "on-primary-fixed-variant": "#004e60",
+            "on-tertiary-container": "#3737c6",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed-variant": "#005226",
+            "error-container": "#ffdad6",
+            "tertiary-container": "#b9baff",
+            "surface-container-low": "#f2f4f6",
+            "inverse-on-surface": "#eff1f3",
+            "surface-bright": "#f7f9fb",
+            "background": "#f7f9fb",
+            "on-error": "#ffffff",
+            "secondary-fixed": "#62ff96",
+            "on-primary-container": "#00566a",
+            "tertiary-fixed-dim": "#c0c1ff",
+            "on-secondary-fixed": "#00210b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "stack-lg": "2rem",
+            "unit": "8px",
+            "gutter": "1.5rem",
+            "stack-sm": "0.5rem",
+            "container-padding-mobile": "1.25rem",
+            "container-padding-desktop": "2.5rem",
+            "stack-md": "1rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Montserrat"],
+            "label-md": ["Inter"],
+            "headline-lg-mobile": ["Montserrat"],
+            "body-lg": ["Inter"],
+            "headline-md": ["Montserrat"],
+            "display-lg": ["Montserrat"],
+            "body-md": ["Inter"],
+            "label-sm": ["Inter"]
+          },
+          "fontSize": {
+            "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "headline-md": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+            "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+            "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-gradient {
+      background: linear-gradient(135deg, #00677f 0%, #00d1ff 100%);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 103, 127, 0.3);
+      filter: brightness(1.1);
+    }
+
+    .btn-gradient:active {
+      transform: scale(0.96);
+    }
+
+    .input-focus-effect:focus-within {
+      border-bottom-color: #00d1ff;
+    }
+  </style>
+</head>
+
+<body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col pt-16">
+  <!-- Header Simplificado -->
+  <header
+    class="fixed top-0 left-0 w-full z-50 bg-surface-container-lowest/80 backdrop-blur-md border-b border-surface-container shadow-sm">
+    <div class="max-w-7xl mx-auto px-gutter h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <img alt="Logo" class="h-8 w-8 object-contain"
+          src="https://lh3.googleusercontent.com/aida/AP1WRLtUo3LLjCUkQSX4KJbBzIMX2fle5BDQh0QbDBf0im3jyr-DUqQ8l1InpNLpwB2cBR-COs07ERaePK3k6arpLf6WQ1dmzKEZNZNuLBPDqubQ5b26McxSgl6S1wmo0F-yUHE5MIe3ipzhVu5pixps5_kk44XU9OqzSDyeK2bnckhqKxY33p9XZEr-lcl8xTX2BBJ97O7toUGURQ7VnHOS9UQ3GetAHPjGkgh9Z7x3FZl096sHsEvZWjjfX11A">
+        <span class="font-headline-md text-headline-md font-extrabold tracking-tight text-primary">
+          On The Way To The Goal
+        </span>
+      </div>
+      <button
+        class="bg-primary text-on-primary px-6 py-2.5 rounded-full font-bold shadow-lg hover:scale-105 active:scale-95 transition-all text-label-md font-label-md">Registrarse</button>
+    </div>
+  </header>
+  <!-- Main Content Canvas -->
+  <main class="flex-grow flex items-center justify-center px-gutter py-stack-lg">
+    <div class="w-full max-w-[440px] animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <!-- White Card -->
+      <div class="bg-surface-container-lowest rounded-xl p-8 md:p-10 shadow-sm glass-card">
+        <!-- Brand Logo Center -->
+        <div class="flex justify-center mb-stack-lg">
+          <img alt="Logo" class="h-16 w-16 object-contain"
+            src="https://lh3.googleusercontent.com/aida/AP1WRLtUo3LLjCUkQSX4KJbBzIMX2fle5BDQh0QbDBf0im3jyr-DUqQ8l1InpNLpwB2cBR-COs07ERaePK3k6arpLf6WQ1dmzKEZNZNuLBPDqubQ5b26McxSgl6S1wmo0F-yUHE5MIe3ipzhVu5pixps5_kk44XU9OqzSDyeK2bnckhqKxY33p9XZEr-lcl8xTX2BBJ97O7toUGURQ7VnHOS9UQ3GetAHPjGkgh9Z7x3FZl096sHsEvZWjjfX11A">
+        </div>
+        <!-- Text Header -->
+        <div class="text-center mb-stack-lg">
+          <h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">
+            Bienvenido de nuevo
+          </h1>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            Continúa tu viaje hacia tus metas
+          </p>
+        </div>
+        <!-- Login Form -->
+        <form class="space-y-6" onsubmit="return false;">
+          <!-- Email Field -->
+          <div class="space-y-2 group">
+            <label
+              class="font-label-md text-label-md text-on-surface-variant ml-1 group-focus-within:text-primary transition-colors"
+              for="email">
+              Correo electrónico
+            </label>
+            <div
+              class="relative flex items-center border-b border-outline-variant py-2 input-focus-effect transition-all duration-300">
+              <span class="material-symbols-outlined text-outline absolute left-0" data-icon="mail">mail</span>
+              <input
+                class="w-full bg-transparent border-none focus:ring-0 pl-10 py-1 text-on-surface placeholder:text-outline-variant font-body-md"
+                id="email" name="email" placeholder="ejemplo@correo.com" type="email">
+            </div>
+          </div>
+          <!-- Password Field -->
+          <div class="space-y-2 group">
+            <label
+              class="font-label-md text-label-md text-on-surface-variant ml-1 group-focus-within:text-primary transition-colors"
+              for="password">
+              Contraseña
+            </label>
+            <div
+              class="relative flex items-center border-b border-outline-variant py-2 input-focus-effect transition-all duration-300">
+              <span class="material-symbols-outlined text-outline absolute left-0" data-icon="lock">lock</span>
+              <input
+                class="w-full bg-transparent border-none focus:ring-0 pl-10 py-1 text-on-surface placeholder:text-outline-variant font-body-md"
+                id="password" name="password" placeholder="••••••••" type="password">
+            </div>
+          </div>
+          <!-- Forgot Password -->
+          <div class="flex justify-end">
+            <a class="font-label-sm text-label-sm text-primary hover:underline" href="#">
+              ¿Olvidaste tu contraseña?
+            </a>
+          </div>
+          <!-- Submit Button -->
+          <button
+            class="w-full py-4 px-6 rounded-lg text-on-primary font-label-md text-label-md btn-gradient flex items-center justify-center gap-2 group"
+            type="submit">
+            <span class="">Iniciar sesión</span>
+            <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform"
+              data-icon="arrow_forward">arrow_forward</span>
+          </button>
+        </form>
+        <!-- Footer Link -->
+        <div class="mt-8 pt-6 border-t border-surface-container text-center">
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            ¿No tienes una cuenta?
+            <a class="text-primary font-bold hover:underline ml-1" href="#">Regístrate</a>
+          </p>
+        </div>
+      </div>
+      <!-- Social Login Disclaimer -->
+      <div class="mt-8 text-center space-y-4">
+        <p class="font-label-sm text-label-sm text-outline-variant uppercase tracking-widest">O continúa con</p>
+        <div class="flex justify-center gap-4">
+          <button
+            class="p-3 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors text-on-surface-variant">
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+              <path
+                d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032 s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2 C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z">
+              </path>
+            </svg>
+          </button>
+          <button
+            class="p-3 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors text-on-surface-variant">
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+              <path
+                d="M12,2C6.477,2,2,6.477,2,12c0,5.085,3.811,9.28,8.719,9.91V14.22H8.16v-2.22h2.559v-1.691c0-2.524,1.543-3.905,3.791-3.905 c1.077,0,2.003,0.08,2.272,0.116v2.634l-1.559,0.001c-1.225,0-1.462,0.582-1.462,1.436v1.409h2.916l-0.381,2.22h-2.535V21.91 C18.189,21.28,22,17.085,22,12C22,6.477,17.523,2,12,2z">
+              </path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- Micro-interaction Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const inputs = document.querySelectorAll('input');
+
+      inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+          const container = input.closest('.input-focus-effect');
+          container.style.borderBottomWidth = '2px';
+          container.style.paddingBottom = '7px'; // Counteract the extra 1px border
+        });
+
+        input.addEventListener('blur', () => {
+          const container = input.closest('.input-focus-effect');
+          container.style.borderBottomWidth = '1px';
+          container.style.paddingBottom = '8px';
+        });
+      });
+    });
+  </script>
+
+
+</body>
+
+</html>

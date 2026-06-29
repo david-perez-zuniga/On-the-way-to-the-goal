@@ -10,7 +10,7 @@ export default function RegisterPage() {
   return (
     <>
       <TopNavBar>
-        <Button variant="primary" onClick={() => navigate('/')}>Iniciar sesión</Button>
+        <Button variant="primary" onClick={() => navigate('/iniciar-sesion')}>Iniciar sesión</Button>
       </TopNavBar>
       <main className={styles.main}>
         <RegisterForm />

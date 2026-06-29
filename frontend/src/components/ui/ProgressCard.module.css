@@ -1,0 +1,66 @@
+.card {
+  padding: 1rem;
+  border: 1px solid rgba(0, 103, 127, 0.2);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-radius: 1rem;
+  width: 12rem;
+}
+
+@media (min-width: 768px) {
+  .card {
+    padding: 1.5rem;
+    width: 16rem;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.label {
+  font-family: var(--font-label-md);
+  font-size: var(--fs-label-md);
+  line-height: var(--lh-label-md);
+  letter-spacing: 0.01em;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.percentage {
+  font-family: var(--font-label-md);
+  font-size: var(--fs-label-md);
+  font-weight: 700;
+  line-height: var(--lh-label-md);
+  color: var(--color-primary);
+}
+
+.barOuter {
+  width: 100%;
+  height: 0.5rem;
+  background-color: var(--color-surface-container);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-top: 0.25rem;
+}
+
+.barInner {
+  height: 100%;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 10px rgba(0, 103, 127, 0.4);
+}
+
+.amount {
+  font-family: var(--font-label-sm);
+  font-size: var(--fs-label-sm);
+  line-height: var(--lh-label-sm);
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+  margin-top: 0.5rem;
+}

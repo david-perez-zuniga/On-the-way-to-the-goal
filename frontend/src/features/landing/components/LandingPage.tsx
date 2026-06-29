@@ -10,7 +10,7 @@ export default function LandingPage() {
   return (
     <>
       <TopNavBar>
-        <Button variant="ghost">Iniciar sesión</Button>
+        <Button variant="ghost" onClick={() => navigate('/iniciar-sesion')}>Iniciar sesión</Button>
         <Button variant="primary" onClick={() => navigate('/registro')}>Registrarse</Button>
       </TopNavBar>
       <main className={styles.main}>

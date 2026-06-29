@@ -1,0 +1,184 @@
+.hero {
+  min-height: calc(100vh - 4rem);
+  display: flex;
+  align-items: center;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 3rem var(--spacing-container-padding-mobile);
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 4rem var(--spacing-container-padding-desktop);
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+}
+
+.textColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-stack-lg);
+  order: 2;
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .textColumn {
+    order: 1;
+    text-align: left;
+  }
+}
+
+.textContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.title {
+  font-family: var(--font-display-lg);
+  font-size: 2.25rem;
+  line-height: var(--lh-display-lg);
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: var(--color-on-background);
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .title {
+    font-size: var(--fs-display-lg);
+  }
+}
+
+.gradientText {
+  background: linear-gradient(to right, var(--color-primary), var(--color-tertiary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.description {
+  font-family: var(--font-body-lg);
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body-lg);
+  font-weight: 400;
+  color: var(--color-on-surface-variant);
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .description {
+    margin: 0;
+  }
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-top: 1rem;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  .cta {
+    justify-content: flex-start;
+  }
+}
+
+.imageColumn {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  order: 1;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .imageColumn {
+    order: 2;
+    padding: 0;
+  }
+}
+
+.blurCircle {
+  position: absolute;
+  z-index: -10;
+  width: 110%;
+  height: 110%;
+  background: rgba(0, 103, 127, 0.05);
+  border-radius: 50%;
+  filter: blur(64px);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.imageCard {
+  padding: 0.5rem;
+  border-radius: 2rem;
+  width: 100%;
+  max-width: 500px;
+}
+
+@media (min-width: 768px) {
+  .imageCard {
+    padding: 1rem;
+  }
+}
+
+.heroImage {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.progressOverlay {
+  position: absolute;
+  bottom: -1rem;
+  right: -0.5rem;
+}
+
+@media (min-width: 768px) {
+  .progressOverlay {
+    bottom: -1.5rem;
+    right: -1.5rem;
+  }
+}

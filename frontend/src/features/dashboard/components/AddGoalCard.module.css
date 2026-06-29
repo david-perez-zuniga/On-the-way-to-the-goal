@@ -1,0 +1,69 @@
+.button {
+  border: 2px dashed var(--color-outline-variant);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 320px;
+  width: 100%;
+  font-family: inherit;
+}
+
+.button:hover {
+  background: #fff;
+  border-color: var(--color-primary);
+}
+
+.iconCircle {
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  transition: background-color 0.2s;
+}
+
+.button:hover .iconCircle {
+  background: rgba(0, 103, 127, 0.1);
+}
+
+.icon {
+  font-size: 1.875rem;
+  color: var(--color-outline);
+  transition: color 0.2s;
+}
+
+.button:hover .icon {
+  color: var(--color-primary);
+}
+
+.label {
+  font-family: var(--font-headline-md);
+  font-size: var(--fs-headline-md);
+  line-height: var(--lh-headline-md);
+  font-weight: 600;
+  color: var(--color-outline);
+  transition: color 0.2s;
+}
+
+.button:hover .label {
+  color: var(--color-primary);
+}
+
+.hint {
+  font-family: var(--font-body-md);
+  font-size: var(--fs-body-md);
+  line-height: var(--lh-body-md);
+  font-weight: 400;
+  color: var(--color-outline-variant);
+  margin-top: 0.5rem;
+}

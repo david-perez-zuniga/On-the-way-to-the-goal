@@ -49,7 +49,7 @@ export default function RegisterForm() {
         <div className={styles.footer}>
           <p className={styles.footerText}>
             ¿Ya tienes una cuenta?
-            <a className={styles.footerLink} href="#" onClick={(e) => { e.preventDefault(); navigate('/') }}>Inicia sesión</a>
+            <a className={styles.footerLink} href="#" onClick={(e) => { e.preventDefault(); navigate('/iniciar-sesion') }}>Inicia sesión</a>
           </p>
         </div>
       </GlassCard>

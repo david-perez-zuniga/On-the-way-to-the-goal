@@ -1,0 +1,23 @@
+.main {
+  flex-grow: 1;
+  padding-top: 4rem;
+}
+
+.features {
+  padding: 6rem 0;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.featuresInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: var(--spacing-container-padding-mobile);
+  padding-right: var(--spacing-container-padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .featuresInner {
+    padding-left: var(--spacing-container-padding-desktop);
+    padding-right: var(--spacing-container-padding-desktop);
+  }
+}

@@ -4,15 +4,19 @@ import styles from './TopNavBar.module.css'
 
 interface TopNavBarProps {
   children?: ReactNode
+  variant?: 'default' | 'simple'
 }
 
-export default function TopNavBar({ children }: TopNavBarProps) {
+export default function TopNavBar({ children, variant = 'default' }: TopNavBarProps) {
+  const headerClass = variant === 'simple' ? `${styles.header} ${styles.simple}` : styles.header
+  const brandClass = variant === 'simple' ? `${styles.brandName} ${styles.brandNameSimple}` : styles.brandName
+
   return (
-    <header className={styles.header}>
-      <div className={styles.inner}>
+    <header className={headerClass}>
+      <div className={`${styles.inner} ${variant === 'simple' ? styles.innerSimple : ''}`}>
         <div className={styles.logoSection}>
           <img src={logoSrc} alt="Logo de On The Way To The Goal" className={styles.logo} />
-          <span className={styles.brandName}>On The Way To The Goal</span>
+          <span className={brandClass}>On The Way To The Goal</span>
         </div>
         {children && <div className={styles.actions}>{children}</div>}
       </div>

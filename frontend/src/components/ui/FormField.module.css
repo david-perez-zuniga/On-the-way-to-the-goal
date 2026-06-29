@@ -7,6 +7,10 @@
   transform: scale(1.02);
 }
 
+.fieldLogin:focus-within {
+  transform: none;
+}
+
 .label {
   display: block;
   font-family: var(--font-label-md);
@@ -23,6 +27,14 @@
   color: var(--color-primary);
 }
 
+.fieldLogin:focus-within .labelLogin {
+  color: var(--color-primary);
+}
+
+.labelLogin {
+  margin-left: 0.25rem;
+}
+
 .inputWrapper {
   display: flex;
   align-items: center;
@@ -35,10 +47,24 @@
   border-bottom-color: var(--color-primary);
 }
 
+.fieldLogin:focus-within .inputWrapperLogin {
+  border-bottom-color: var(--color-primary);
+}
+
+.inputWrapperLogin {
+  position: relative;
+}
+
 .icon {
   color: var(--color-outline);
   margin-right: 0.75rem;
   font-size: 1.25rem;
+}
+
+.iconLogin {
+  position: absolute;
+  left: 0;
+  margin-right: 0;
 }
 
 .input {
@@ -58,4 +84,12 @@
 
 .input:focus {
   outline: none;
+}
+
+.inputLogin {
+  padding-left: 2.5rem;
+}
+
+.inputLogin::placeholder {
+  color: var(--color-outline-variant);
 }

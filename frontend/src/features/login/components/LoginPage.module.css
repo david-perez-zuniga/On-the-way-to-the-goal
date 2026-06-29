@@ -1,0 +1,10 @@
+.main {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: var(--spacing-gutter);
+  padding-right: var(--spacing-gutter);
+  padding-top: var(--spacing-stack-lg);
+  padding-bottom: var(--spacing-stack-lg);
+}

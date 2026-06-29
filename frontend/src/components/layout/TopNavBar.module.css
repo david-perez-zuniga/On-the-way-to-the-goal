@@ -1,0 +1,68 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(224, 227, 229, 0.3);
+}
+
+.inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4rem;
+  padding-left: var(--spacing-container-padding-mobile);
+  padding-right: var(--spacing-container-padding-mobile);
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .inner {
+    padding-left: var(--spacing-container-padding-desktop);
+    padding-right: var(--spacing-container-padding-desktop);
+  }
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.brandName {
+  font-family: var(--font-headline-md);
+  font-size: var(--fs-headline-md);
+  font-weight: 700;
+  color: var(--color-primary);
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .brandName {
+    display: block;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .actions {
+    gap: 1rem;
+  }
+}

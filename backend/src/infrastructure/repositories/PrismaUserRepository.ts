@@ -26,4 +26,22 @@ export class PrismaUserRepository implements IUserRepository {
   public async findAll(id: string): Promise<User[]>{
     throw new Error('Método no implementado aún');
   }
+
+  public async findByEmail(email: string): Promise<User | null> {
+      const emailUserPrisma = await prisma.user.findUnique({
+        where: {
+          email: email
+        }
+      })
+      if (emailUserPrisma == null){
+        return null
+      }
+      const gotUserEmail = new User(
+        emailUserPrisma.id,
+        emailUserPrisma.email,
+        emailUserPrisma.password,
+        emailUserPrisma.createdAt
+      )
+      return gotUserEmail
+    }
 }

@@ -4,5 +4,6 @@ import { Goal } from '../entities/Goal';
 export interface IGoalRepository {
   create(goal: Goal): Promise<void>;
   findById(id: string): Promise<Goal | null>;
-  findAll(userId: string): Promise<Goal[]>   
+  findAll(userId: string): Promise<Goal[]>;
+  update(goal: Goal): Promise<void>;
 }

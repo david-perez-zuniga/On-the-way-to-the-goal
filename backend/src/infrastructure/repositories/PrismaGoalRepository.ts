@@ -21,8 +21,6 @@ export class PrismaGoalRepository implements IGoalRepository {
     
   }
 
-  // Dejamos estos pendientes para la próxima fase, pero debemos declararlos 
-  // para cumplir con el contrato de la interfaz.
   public async findById(id: string): Promise<Goal | null> {
     throw new Error('Método no implementado aún.');
   }
@@ -49,4 +47,22 @@ export class PrismaGoalRepository implements IGoalRepository {
     });
     return gotUserGoals;
   }
+
+  public async update(goal: Goal): Promise<void> {
+      await prisma.goal.update({
+        where: {
+          id: goal.id,
+        },
+        data: {
+          title: goal.title,
+          totalAmount: goal.totalAmount,
+          currency: goal.currency,
+          createdAt: goal.createdAt,
+          updateAt: goal.updatedAt,
+          finishedAt: goal.finishedAt,
+          userId: goal.userId
+        }
+      });
+  }
 }
+

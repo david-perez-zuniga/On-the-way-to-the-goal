@@ -1,11 +1,13 @@
 import { type Request, type Response } from 'express';
 import { CreateGoalUseCase } from '../../application/use-cases/CreateGoalUseCase';
 import { UpdateGoalUseCase } from '../../application/use-cases/UpdateGoalUseCase';
+import { DeleteGoalUseCase } from '../../application/use-cases/DeleteGoalUseCase';
 
 export class GoalController {
   constructor(
     private readonly createGoalUseCase: CreateGoalUseCase,
     private readonly updateGoalUseCase: UpdateGoalUseCase,
+    private readonly deleteGoalUseCase: DeleteGoalUseCase,
   ) {}
 
   public createGoal = async (req: Request, res: Response): Promise<void> => {
@@ -29,6 +31,17 @@ export class GoalController {
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Error interno del servidor al actualizar la meta' });
+    }
+  };
+
+  public deleteGoal = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params as {id: string};
+      await this.deleteGoalUseCase.execute({ id });
+      res.status(204).send();
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error interno del servidor al eliminar la meta' });
     }
   };
 }

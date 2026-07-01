@@ -1,10 +1,13 @@
 import { type Request, type Response } from 'express';
 import { CreateGoalUseCase } from '../../application/use-cases/CreateGoalUseCase';
+import { UpdateGoalUseCase } from '../../application/use-cases/UpdateGoalUseCase';
 
 export class GoalController {
-  // Inyectamos el caso de uso en el controlador
-  constructor(private readonly createGoalUseCase: CreateGoalUseCase) {}
-  // Usamos una arrow function para no perder el contexto 
+  constructor(
+    private readonly createGoalUseCase: CreateGoalUseCase,
+    private readonly updateGoalUseCase: UpdateGoalUseCase,
+  ) {}
+
   public createGoal = async (req: Request, res: Response): Promise<void> => {
     try {
       const {title, totalAmount, currency, userId} = req.body
@@ -14,6 +17,18 @@ export class GoalController {
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Error interno del servidor al crear la meta' });
+    }
+  };
+
+  public updateGoal = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params as {id: string};
+      const { title, totalAmount, currency, userId, createdAt, finishedAt } = req.body;
+      const updatedGoal = await this.updateGoalUseCase.execute({ id, title, totalAmount, currency, userId, createdAt, finishedAt });
+      res.status(200).json(updatedGoal);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error interno del servidor al actualizar la meta' });
     }
   };
 }

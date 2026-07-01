@@ -28,6 +28,25 @@ export class PrismaGoalRepository implements IGoalRepository {
   }
 
   public async findAll(userId: string): Promise<Goal[]> {
-    throw new Error('Método no implementado aún.');
+    const userGoals = await prisma.goal.findMany({
+      where: {
+        userId: userId,
+      }
+    });
+    if (userGoals == null){
+      return []
+    }
+    const gotUserGoals = userGoals.map(g =>{
+      return new Goal(
+      g.id,
+      g.title,
+      g.totalAmount,
+      g.currency,
+      g.userId,
+      g.createdAt,
+      g.updatedAt,
+      g.finishedAt)
+    });
+    return gotUserGoals;
   }
 }

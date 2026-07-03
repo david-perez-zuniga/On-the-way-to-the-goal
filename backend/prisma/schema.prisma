@@ -43,6 +43,7 @@ model Payment{
   id String @id @default(uuid())
   deposit Decimal
   depositDate DateTime @default(now())
+  currency String
 
   goalId String
   goal Goal @relation(fields: [goalId], references: [id])

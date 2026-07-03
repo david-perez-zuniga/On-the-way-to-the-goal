@@ -6,4 +6,5 @@ export interface IGoalRepository {
   findById(id: string): Promise<Goal | null>;
   findAll(userId: string): Promise<Goal[]>;
   update(goal: Goal): Promise<void>;
+  delete(id: string): Promise<void>;
 }

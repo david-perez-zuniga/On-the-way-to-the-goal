@@ -7,7 +7,7 @@ import { PrismaGoalRepository } from "./PrismaGoalRepository";
 export class PrismaPaymentRepository implements IPaymentRepository {
 
    public async create(payment: Payment): Promise<void>{
-    await prisma.payment.create({
+      await prisma.payment.create({
       data: {
         id: payment.id,
         deposit: new Prisma.Decimal(payment.deposit),
@@ -16,5 +16,23 @@ export class PrismaPaymentRepository implements IPaymentRepository {
       }
     });
   }
-
+    public async findByGoalId(idGoal: string): Promise<Payment[]> {
+      const goalid = await prisma.payment.findMany({
+        where: {
+          goalId: idGoal,
+        }
+      });
+      if (goalid == null){
+        return []
+      }
+      const gotGoal = goalid.map(g =>{
+        return new Payment(
+          g.id,
+          g.deposit,
+          g.depositDate,
+          g.goalId
+        )
+      });
+      return gotGoal
+  }
 }

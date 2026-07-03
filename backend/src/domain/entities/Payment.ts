@@ -5,6 +5,7 @@ export class Payment {
     public readonly id: string,
     public readonly deposit: Prisma.Decimal,
     public readonly depositDate: Date,
+    public readonly currency: string,
     public readonly goalId: string,
   )
   {

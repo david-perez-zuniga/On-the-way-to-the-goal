@@ -6,6 +6,7 @@ import type { IGoalRepository } from "../../domain/repositories/IGoalRepository"
 export interface CreatePaymentDTO{
   deposit: number;
   goalId: string;
+  currency: string
 }
 
 export class CreatePaymentUseCase {
@@ -25,6 +26,7 @@ export class CreatePaymentUseCase {
       id,
       new Prisma.Decimal(data.deposit),
       depositDate,
+      data.currency,
       data.goalId
     )
     

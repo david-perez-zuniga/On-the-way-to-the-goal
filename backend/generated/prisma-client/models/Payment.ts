@@ -38,6 +38,7 @@ export type PaymentMinAggregateOutputType = {
   id: string | null
   deposit: runtime.Decimal | null
   depositDate: Date | null
+  currency: string | null
   goalId: string | null
 }
 
@@ -45,6 +46,7 @@ export type PaymentMaxAggregateOutputType = {
   id: string | null
   deposit: runtime.Decimal | null
   depositDate: Date | null
+  currency: string | null
   goalId: string | null
 }
 
@@ -52,6 +54,7 @@ export type PaymentCountAggregateOutputType = {
   id: number
   deposit: number
   depositDate: number
+  currency: number
   goalId: number
   _all: number
 }
@@ -69,6 +72,7 @@ export type PaymentMinAggregateInputType = {
   id?: true
   deposit?: true
   depositDate?: true
+  currency?: true
   goalId?: true
 }
 
@@ -76,6 +80,7 @@ export type PaymentMaxAggregateInputType = {
   id?: true
   deposit?: true
   depositDate?: true
+  currency?: true
   goalId?: true
 }
 
@@ -83,6 +88,7 @@ export type PaymentCountAggregateInputType = {
   id?: true
   deposit?: true
   depositDate?: true
+  currency?: true
   goalId?: true
   _all?: true
 }
@@ -177,6 +183,7 @@ export type PaymentGroupByOutputType = {
   id: string
   deposit: runtime.Decimal
   depositDate: Date
+  currency: string
   goalId: string
   _count: PaymentCountAggregateOutputType | null
   _avg: PaymentAvgAggregateOutputType | null
@@ -207,6 +214,7 @@ export type PaymentWhereInput = {
   id?: Prisma.StringFilter<"Payment"> | string
   deposit?: Prisma.DecimalFilter<"Payment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Prisma.DateTimeFilter<"Payment"> | Date | string
+  currency?: Prisma.StringFilter<"Payment"> | string
   goalId?: Prisma.StringFilter<"Payment"> | string
   goal?: Prisma.XOR<Prisma.GoalScalarRelationFilter, Prisma.GoalWhereInput>
 }
@@ -215,6 +223,7 @@ export type PaymentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   depositDate?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   goalId?: Prisma.SortOrder
   goal?: Prisma.GoalOrderByWithRelationInput
 }
@@ -226,6 +235,7 @@ export type PaymentWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PaymentWhereInput | Prisma.PaymentWhereInput[]
   deposit?: Prisma.DecimalFilter<"Payment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Prisma.DateTimeFilter<"Payment"> | Date | string
+  currency?: Prisma.StringFilter<"Payment"> | string
   goalId?: Prisma.StringFilter<"Payment"> | string
   goal?: Prisma.XOR<Prisma.GoalScalarRelationFilter, Prisma.GoalWhereInput>
 }, "id">
@@ -234,6 +244,7 @@ export type PaymentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   depositDate?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   goalId?: Prisma.SortOrder
   _count?: Prisma.PaymentCountOrderByAggregateInput
   _avg?: Prisma.PaymentAvgOrderByAggregateInput
@@ -249,6 +260,7 @@ export type PaymentScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Payment"> | string
   deposit?: Prisma.DecimalWithAggregatesFilter<"Payment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Prisma.DateTimeWithAggregatesFilter<"Payment"> | Date | string
+  currency?: Prisma.StringWithAggregatesFilter<"Payment"> | string
   goalId?: Prisma.StringWithAggregatesFilter<"Payment"> | string
 }
 
@@ -256,6 +268,7 @@ export type PaymentCreateInput = {
   id?: string
   deposit: runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Date | string
+  currency: string
   goal: Prisma.GoalCreateNestedOneWithoutPaymentInput
 }
 
@@ -263,6 +276,7 @@ export type PaymentUncheckedCreateInput = {
   id?: string
   deposit: runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Date | string
+  currency: string
   goalId: string
 }
 
@@ -270,6 +284,7 @@ export type PaymentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   deposit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   goal?: Prisma.GoalUpdateOneRequiredWithoutPaymentNestedInput
 }
 
@@ -277,6 +292,7 @@ export type PaymentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   deposit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   goalId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -284,6 +300,7 @@ export type PaymentCreateManyInput = {
   id?: string
   deposit: runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Date | string
+  currency: string
   goalId: string
 }
 
@@ -291,12 +308,14 @@ export type PaymentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   deposit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PaymentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   deposit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   goalId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -314,6 +333,7 @@ export type PaymentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   depositDate?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   goalId?: Prisma.SortOrder
 }
 
@@ -325,6 +345,7 @@ export type PaymentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   depositDate?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   goalId?: Prisma.SortOrder
 }
 
@@ -332,6 +353,7 @@ export type PaymentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   deposit?: Prisma.SortOrder
   depositDate?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   goalId?: Prisma.SortOrder
 }
 
@@ -385,12 +407,14 @@ export type PaymentCreateWithoutGoalInput = {
   id?: string
   deposit: runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Date | string
+  currency: string
 }
 
 export type PaymentUncheckedCreateWithoutGoalInput = {
   id?: string
   deposit: runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Date | string
+  currency: string
 }
 
 export type PaymentCreateOrConnectWithoutGoalInput = {
@@ -426,6 +450,7 @@ export type PaymentScalarWhereInput = {
   id?: Prisma.StringFilter<"Payment"> | string
   deposit?: Prisma.DecimalFilter<"Payment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Prisma.DateTimeFilter<"Payment"> | Date | string
+  currency?: Prisma.StringFilter<"Payment"> | string
   goalId?: Prisma.StringFilter<"Payment"> | string
 }
 
@@ -433,24 +458,28 @@ export type PaymentCreateManyGoalInput = {
   id?: string
   deposit: runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Date | string
+  currency: string
 }
 
 export type PaymentUpdateWithoutGoalInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   deposit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PaymentUncheckedUpdateWithoutGoalInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   deposit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PaymentUncheckedUpdateManyWithoutGoalInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   deposit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   depositDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -459,6 +488,7 @@ export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   deposit?: boolean
   depositDate?: boolean
+  currency?: boolean
   goalId?: boolean
   goal?: boolean | Prisma.GoalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
@@ -467,6 +497,7 @@ export type PaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   deposit?: boolean
   depositDate?: boolean
+  currency?: boolean
   goalId?: boolean
   goal?: boolean | Prisma.GoalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
@@ -475,6 +506,7 @@ export type PaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   deposit?: boolean
   depositDate?: boolean
+  currency?: boolean
   goalId?: boolean
   goal?: boolean | Prisma.GoalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
@@ -483,10 +515,11 @@ export type PaymentSelectScalar = {
   id?: boolean
   deposit?: boolean
   depositDate?: boolean
+  currency?: boolean
   goalId?: boolean
 }
 
-export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "deposit" | "depositDate" | "goalId", ExtArgs["result"]["payment"]>
+export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "deposit" | "depositDate" | "currency" | "goalId", ExtArgs["result"]["payment"]>
 export type PaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   goal?: boolean | Prisma.GoalDefaultArgs<ExtArgs>
 }
@@ -506,6 +539,7 @@ export type $PaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     deposit: runtime.Decimal
     depositDate: Date
+    currency: string
     goalId: string
   }, ExtArgs["result"]["payment"]>
   composites: {}
@@ -934,6 +968,7 @@ export interface PaymentFieldRefs {
   readonly id: Prisma.FieldRef<"Payment", 'String'>
   readonly deposit: Prisma.FieldRef<"Payment", 'Decimal'>
   readonly depositDate: Prisma.FieldRef<"Payment", 'DateTime'>
+  readonly currency: Prisma.FieldRef<"Payment", 'String'>
   readonly goalId: Prisma.FieldRef<"Payment", 'String'>
 }
     

@@ -100,6 +100,7 @@ export const PaymentScalarFieldEnum = {
   id: 'id',
   deposit: 'deposit',
   depositDate: 'depositDate',
+  currency: 'currency',
   goalId: 'goalId'
 } as const
 

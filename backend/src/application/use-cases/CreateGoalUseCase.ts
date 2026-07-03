@@ -1,5 +1,6 @@
 import { Goal } from '../../domain/entities/Goal';
 import { type IGoalRepository } from '../../domain/repositories/IGoalRepository';
+import { Prisma } from '../../infrastructure/db';
 
 // Contrato para crear un Goal
 export interface CreateGoalDTO {
@@ -23,8 +24,7 @@ export class CreateGoalUseCase {
     const newGoal = new Goal(
       id,
       data.title,
-      data.totalAmount,
-      currentAmount,
+      new Prisma.Decimal(data.totalAmount),
       data.currency,
       data.userId,
       createdAt,

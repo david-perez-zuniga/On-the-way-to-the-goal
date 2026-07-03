@@ -64,5 +64,12 @@ export class PrismaGoalRepository implements IGoalRepository {
         }
       });
   }
-}
 
+  public async delete(id: string): Promise<void>{
+    await prisma.goal.delete({
+      where: {
+        id: id,
+      }
+    });
+  }
+}

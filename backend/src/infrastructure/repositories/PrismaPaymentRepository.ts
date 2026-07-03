@@ -2,7 +2,6 @@ import { Prisma } from "../db";
 import { prisma } from "../db/prisma";
 import { type IPaymentRepository } from "../../domain/repositories/IPaymentRepository";
 import { Payment } from "../../domain/entities/Payment";
-import { PrismaGoalRepository } from "./PrismaGoalRepository";
 
 export class PrismaPaymentRepository implements IPaymentRepository {
 
@@ -12,6 +11,7 @@ export class PrismaPaymentRepository implements IPaymentRepository {
         id: payment.id,
         deposit: new Prisma.Decimal(payment.deposit),
         depositDate: payment.depositDate,
+        currency: payment.currency,
         goalId: payment.goalId
       }
     });
@@ -27,6 +27,7 @@ export class PrismaPaymentRepository implements IPaymentRepository {
           g.id,
           g.deposit,
           g.depositDate,
+          g.currency,
           g.goalId
         )
       });

@@ -22,9 +22,6 @@ export class PrismaPaymentRepository implements IPaymentRepository {
           goalId: idGoal,
         }
       });
-      if (goalid == null){
-        return []
-      }
       const gotGoal = goalid.map(g =>{
         return new Payment(
           g.id,

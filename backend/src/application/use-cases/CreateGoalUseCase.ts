@@ -18,7 +18,6 @@ export class CreateGoalUseCase {
     const createdAt = new Date();
     const updatedAt = new Date();
     const id = crypto.randomUUID();
-    const currentAmount = 0;
     const finishedAt = null;
 
     const newGoal = new Goal(

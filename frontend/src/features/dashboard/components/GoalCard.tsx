@@ -11,6 +11,8 @@ interface GoalCardProps {
   currentAmount: number
   percentage: number
   actions?: ReactNode
+  onDeposit?: () => void
+  onModify?: () => void
 }
 
 function formatCurrency(amount: number): string {
@@ -31,6 +33,8 @@ export default function GoalCard({
   currentAmount,
   percentage,
   actions,
+  onDeposit,
+  onModify,
 }: GoalCardProps) {
   return (
     <div className={styles.card}>
@@ -51,8 +55,8 @@ export default function GoalCard({
         </div>
         {actions ?? (
           <div className={styles.actions}>
-            <Button variant="gradientPrimary">Invertir</Button>
-            <Button variant="outline">Modificar</Button>
+            <Button variant="gradientPrimary" onClick={onDeposit}>Invertir</Button>
+            <Button variant="outline" onClick={onModify}>Modificar</Button>
           </div>
         )}
       </div>

@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import DashboardHeader from './DashboardHeader'
 import GoalCard from './GoalCard'
 import AddGoalCard from './AddGoalCard'
 import BottomNav from './BottomNav'
 import FAB from './FAB'
+import DepositModal from './DepositModal'
+import ModifyGoalModal from './ModifyGoalModal'
 import styles from './DashboardPage.module.css'
 
 const goals = [
@@ -54,6 +57,39 @@ const goals = [
 ]
 
 export default function DashboardPage() {
+  const [deposit, setDeposit] = useState<{ open: boolean; goalTitle: string }>({
+    open: false,
+    goalTitle: '',
+  })
+
+  const [modify, setModify] = useState<{
+    open: boolean
+    goalTitle: string
+    goalAmount: number
+  }>({
+    open: false,
+    goalTitle: '',
+    goalAmount: 0,
+  })
+
+  const handleDeposit = (title: string) => {
+    setDeposit({ open: true, goalTitle: title })
+  }
+
+  const handleConfirm = (amount: number, currency: 'USD' | 'NIO') => {
+    console.log(`Depósito: ${amount} ${currency} a "${deposit.goalTitle}"`)
+    setDeposit({ open: false, goalTitle: '' })
+  }
+
+  const handleModify = (title: string, amount: number) => {
+    setModify({ open: true, goalTitle: title, goalAmount: amount })
+  }
+
+  const handleSave = (title: string, amount: number, currency: 'USD' | 'NIO') => {
+    console.log(`Meta modificada: "${title}", ${amount} ${currency}`)
+    setModify({ open: false, goalTitle: '', goalAmount: 0 })
+  }
+
   return (
     <>
       <DashboardHeader />
@@ -75,6 +111,8 @@ export default function DashboardPage() {
               goalAmount={goal.goalAmount}
               currentAmount={goal.currentAmount}
               percentage={goal.percentage}
+              onDeposit={() => handleDeposit(goal.title)}
+              onModify={() => handleModify(goal.title, goal.goalAmount)}
             />
           ))}
           <AddGoalCard />
@@ -82,6 +120,19 @@ export default function DashboardPage() {
       </main>
       <BottomNav />
       <FAB />
+      <DepositModal
+        open={deposit.open}
+        goalTitle={deposit.goalTitle}
+        onClose={() => setDeposit({ open: false, goalTitle: '' })}
+        onConfirm={handleConfirm}
+      />
+      <ModifyGoalModal
+        open={modify.open}
+        goalTitle={modify.goalTitle}
+        goalAmount={modify.goalAmount}
+        onClose={() => setModify({ open: false, goalTitle: '', goalAmount: 0 })}
+        onSave={handleSave}
+      />
     </>
   )
 }

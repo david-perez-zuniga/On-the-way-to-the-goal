@@ -69,3 +69,28 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  color: var(--color-outline-variant);
+  margin-bottom: 1rem;
+}
+
+.emptyText {
+  font-family: var(--font-body-md);
+  font-size: var(--fs-body-md);
+  line-height: var(--lh-body-md);
+  font-weight: 400;
+  color: var(--color-outline);
+  margin: 0;
+  text-align: center;
+}

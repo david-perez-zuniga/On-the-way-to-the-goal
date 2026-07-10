@@ -1,4 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { isAuthenticated, logout } from '../../../services'
+import { fetchUserGoals } from '../../goals/services/goalService'
+import type { GoalProgress } from '../../goals/types'
 import DashboardHeader from './DashboardHeader'
 import GoalCard from './GoalCard'
 import AddGoalCard from './AddGoalCard'
@@ -6,57 +10,15 @@ import BottomNav from './BottomNav'
 import FAB from './FAB'
 import DepositModal from './DepositModal'
 import ModifyGoalModal from './ModifyGoalModal'
+import { getGoalVisual } from '../utils'
 import styles from './DashboardPage.module.css'
 
-const goals = [
-  {
-    icon: 'home',
-    iconBg: 'rgba(0, 103, 127, 0.1)',
-    iconColor: 'var(--color-primary)',
-    title: 'Casa de mis Sueños',
-    goalAmount: 250000,
-    currentAmount: 162500,
-    percentage: 65,
-  },
-  {
-    icon: 'directions_car',
-    iconBg: 'rgba(0, 109, 53, 0.1)',
-    iconColor: 'var(--color-secondary)',
-    title: 'Auto Eléctrico',
-    goalAmount: 65000,
-    currentAmount: 26000,
-    percentage: 40,
-  },
-  {
-    icon: 'flight',
-    iconBg: 'rgba(73, 75, 214, 0.1)',
-    iconColor: 'var(--color-tertiary)',
-    title: 'Viaje por Europa',
-    goalAmount: 12000,
-    currentAmount: 10200,
-    percentage: 85,
-  },
-  {
-    icon: 'laptop_mac',
-    iconBg: 'rgba(0, 103, 127, 0.1)',
-    iconColor: 'var(--color-primary)',
-    title: 'Nuevo MacBook Pro',
-    goalAmount: 3500,
-    currentAmount: 700,
-    percentage: 20,
-  },
-  {
-    icon: 'shield',
-    iconBg: 'rgba(186, 26, 26, 0.1)',
-    iconColor: 'var(--color-error)',
-    title: 'Fondo de Emergencia',
-    goalAmount: 20000,
-    currentAmount: 19000,
-    percentage: 95,
-  },
-]
-
 export default function DashboardPage() {
+  const navigate = useNavigate()
+  const [goals, setGoals] = useState<GoalProgress[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
   const [deposit, setDeposit] = useState<{ open: boolean; goalTitle: string }>({
     open: false,
     goalTitle: '',
@@ -71,6 +33,18 @@ export default function DashboardPage() {
     goalTitle: '',
     goalAmount: 0,
   })
+
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate('/iniciar-sesion', { replace: true })
+      return
+    }
+
+    fetchUserGoals()
+      .then(setGoals)
+      .catch((err) => setError(err instanceof Error ? err.message : 'Error al cargar metas'))
+      .finally(() => setLoading(false))
+  }, [navigate])
 
   const handleDeposit = (title: string) => {
     setDeposit({ open: true, goalTitle: title })
@@ -90,9 +64,13 @@ export default function DashboardPage() {
     setModify({ open: false, goalTitle: '', goalAmount: 0 })
   }
 
+  const handleLogout = () => {
+    logout()
+  }
+
   return (
     <>
-      <DashboardHeader />
+      <DashboardHeader onLogout={handleLogout} />
       <main className={styles.main}>
         <div className={styles.header}>
           <h2 className={styles.pageTitle}>Mis Metas de Ahorro</h2>
@@ -100,23 +78,37 @@ export default function DashboardPage() {
             Transforma tus sueños en realidades financieras con un seguimiento inteligente.
           </p>
         </div>
-        <div className={styles.grid}>
-          {goals.map((goal) => (
-            <GoalCard
-              key={goal.title}
-              icon={goal.icon}
-              iconBg={goal.iconBg}
-              iconColor={goal.iconColor}
-              title={goal.title}
-              goalAmount={goal.goalAmount}
-              currentAmount={goal.currentAmount}
-              percentage={goal.percentage}
-              onDeposit={() => handleDeposit(goal.title)}
-              onModify={() => handleModify(goal.title, goal.goalAmount)}
-            />
-          ))}
-          <AddGoalCard />
-        </div>
+        {loading ? (
+          <p className={styles.emptyText}>Cargando tus metas...</p>
+        ) : error ? (
+          <p className={styles.emptyText}>{error}</p>
+        ) : goals.length === 0 ? (
+          <div className={styles.emptyState}>
+            <span className={`material-symbols-outlined ${styles.emptyIcon}`}>savings</span>
+            <p className={styles.emptyText}>Aún no tienes una meta, crea una para verla</p>
+          </div>
+        ) : (
+          <div className={styles.grid}>
+            {goals.map((goal) => {
+              const visual = getGoalVisual(goal.title)
+              return (
+                <GoalCard
+                  key={goal.id}
+                  icon={visual.icon}
+                  iconBg={visual.iconBg}
+                  iconColor={visual.iconColor}
+                  title={goal.title}
+                  goalAmount={goal.totalAmount}
+                  currentAmount={goal.currentAmount}
+                  percentage={goal.percentage}
+                  onDeposit={() => handleDeposit(goal.title)}
+                  onModify={() => handleModify(goal.title, goal.totalAmount)}
+                />
+              )
+            })}
+            <AddGoalCard />
+          </div>
+        )}
       </main>
       <BottomNav />
       <FAB />

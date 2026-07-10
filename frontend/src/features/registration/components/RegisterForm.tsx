@@ -1,16 +1,34 @@
-import type { FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import logoSrc from '../../../assets/logo.png'
 import GlassCard from '../../../components/ui/GlassCard'
 import FormField from '../../../components/ui/FormField'
 import Button from '../../../components/ui/Button'
+import { createUser } from '../../users/services/userService'
 import styles from './RegisterForm.module.css'
 
 export default function RegisterForm() {
   const navigate = useNavigate()
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    setError('')
+    setLoading(true)
+
+    const form = e.target as HTMLFormElement
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value
+    const password = (form.elements.namedItem('password') as HTMLInputElement).value
+
+    try {
+      await createUser({ email, password })
+      navigate('/iniciar-sesion')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al registrarse')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -40,9 +58,10 @@ export default function RegisterForm() {
             required
             autoComplete="new-password"
           />
+          {error && <p className={styles.error}>{error}</p>}
           <div className={styles.submitWrapper}>
-            <Button variant="gradientPrimary" type="submit" icon="arrow_forward">
-              Registrarse
+            <Button variant="gradientPrimary" type="submit" icon="arrow_forward" disabled={loading}>
+              {loading ? 'Registrando...' : 'Registrarse'}
             </Button>
           </div>
         </form>

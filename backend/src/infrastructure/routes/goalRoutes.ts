@@ -8,7 +8,7 @@ import { GetGoalProgressUseCase } from '../../application/use-cases/GetGoalProgr
 import { PrismaPaymentRepository } from '../repositories/PrismaPaymentRepository';
 
 const router : Router = Router();
-const paymentRepository = new PrismaPaymentRepository
+const paymentRepository = new PrismaPaymentRepository();
 const goalRepository = new PrismaGoalRepository();
 
 const createGoalUseCase = new CreateGoalUseCase(goalRepository);

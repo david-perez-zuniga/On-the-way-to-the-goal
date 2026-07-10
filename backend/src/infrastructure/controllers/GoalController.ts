@@ -3,13 +3,15 @@ import { CreateGoalUseCase } from '../../application/use-cases/CreateGoalUseCase
 import { UpdateGoalUseCase } from '../../application/use-cases/UpdateGoalUseCase';
 import { DeleteGoalUseCase } from '../../application/use-cases/DeleteGoalUseCase';
 import type { GetGoalProgressUseCase } from '../../application/use-cases/GetGoalProgressUseCase';
+import type { GetUserGoalsUseCase } from '../../application/use-cases/GetUserGoalsUseCase';
 
 export class GoalController {
   constructor(
     private readonly createGoalUseCase: CreateGoalUseCase,
     private readonly updateGoalUseCase: UpdateGoalUseCase,
     private readonly deleteGoalUseCase: DeleteGoalUseCase,
-    private readonly getGoalProgressUseCase: GetGoalProgressUseCase
+    private readonly getGoalProgressUseCase: GetGoalProgressUseCase,
+    private readonly getUserGoalsUseCase: GetUserGoalsUseCase,
   ) {}
 
   public createGoal = async (req: Request, res: Response): Promise<void> => {
@@ -55,6 +57,21 @@ export class GoalController {
     } catch (error) {
       console.error(error);
       res.status(500).json({error: 'Error interno del servidor al obtener progreso'})
+    }
+  };
+
+  public getUserGoals = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const userId = req.user?.userId
+      if (!userId) {
+        res.status(401).json({ error: 'Usuario no autenticado' })
+        return
+      }
+      const goals = await this.getUserGoalsUseCase.execute(userId)
+      res.status(200).json(goals)
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({ error: 'Error interno del servidor al obtener metas' })
     }
   };
 }

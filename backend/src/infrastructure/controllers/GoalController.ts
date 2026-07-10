@@ -2,12 +2,14 @@ import { type Request, type Response } from 'express';
 import { CreateGoalUseCase } from '../../application/use-cases/CreateGoalUseCase';
 import { UpdateGoalUseCase } from '../../application/use-cases/UpdateGoalUseCase';
 import { DeleteGoalUseCase } from '../../application/use-cases/DeleteGoalUseCase';
+import type { GetGoalProgressUseCase } from '../../application/use-cases/GetGoalProgressUseCase';
 
 export class GoalController {
   constructor(
     private readonly createGoalUseCase: CreateGoalUseCase,
     private readonly updateGoalUseCase: UpdateGoalUseCase,
     private readonly deleteGoalUseCase: DeleteGoalUseCase,
+    private readonly getGoalProgressUseCase: GetGoalProgressUseCase
   ) {}
 
   public createGoal = async (req: Request, res: Response): Promise<void> => {
@@ -42,6 +44,17 @@ export class GoalController {
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Error interno del servidor al eliminar la meta' });
+    }
+  };
+
+  public getGoalProgress = async (req: Request, res: Response): Promise<void> =>{
+    try{
+      const {goalId} = req.params as {goalId: string};
+      const progress = await this.getGoalProgressUseCase.execute({ goalId });
+      res.status(200).json(progress);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({error: 'Error interno del servidor al obtener progreso'})
     }
   };
 }

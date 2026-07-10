@@ -21,8 +21,27 @@ export class PrismaGoalRepository implements IGoalRepository {
     
   }
 
-  public async findById(id: string): Promise<Goal | null> {
-    throw new Error('Método no implementado aún.');
+  public async findById(idGoal: string): Promise<Goal | null> {
+    const goalid = await prisma.goal.findUnique({
+      where: {
+        id: idGoal,
+      }
+    });
+
+    if (goalid == null){
+      return null;
+    }
+    
+    const gotGoal = new Goal(
+      goalid.id,
+      goalid.title,
+      goalid.totalAmount,
+      goalid.currency,
+      goalid.userId,
+      goalid.createdAt,
+      goalid.updatedAt,
+      goalid.finishedAt);
+    return gotGoal
   }
 
   public async findAll(userId: string): Promise<Goal[]> {

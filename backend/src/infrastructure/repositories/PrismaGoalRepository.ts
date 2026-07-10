@@ -77,7 +77,7 @@ export class PrismaGoalRepository implements IGoalRepository {
           totalAmount: goal.totalAmount,
           currency: goal.currency,
           createdAt: goal.createdAt,
-          updateAt: goal.updatedAt,
+          updatedAt: goal.updatedAt,
           finishedAt: goal.finishedAt,
           userId: goal.userId
         }

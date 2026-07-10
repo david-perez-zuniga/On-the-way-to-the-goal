@@ -22,7 +22,8 @@ export class LoginUseCase{
       throw new Error('Credenciales incorrectas')
     }
 
-    const token = jwt.sign({ userId: user.id}, 'SECRETO', {expiresIn: '30min'})
+    const JWT_SECRET = process.env.JWT_SECRET ?? 'SECRETO'
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '30min' })
 
     return token
     

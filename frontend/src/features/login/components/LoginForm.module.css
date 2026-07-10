@@ -77,6 +77,16 @@
   text-decoration: underline;
 }
 
+.error {
+  font-family: var(--font-label-sm);
+  font-size: var(--fs-label-sm);
+  line-height: var(--lh-label-sm);
+  font-weight: 500;
+  color: var(--color-error);
+  text-align: center;
+  margin: 0;
+}
+
 .submitWrapper {
   padding-top: 0;
 }

@@ -16,8 +16,13 @@ export class GoalController {
 
   public createGoal = async (req: Request, res: Response): Promise<void> => {
     try {
-      const {title, totalAmount, currency, userId} = req.body
-      const newGoal = await this.createGoalUseCase.execute({title, totalAmount, currency, userId})
+      const userId = req.user?.userId
+      if (!userId) {
+        res.status(401).json({ error: 'Usuario no autenticado' })
+        return
+      }
+      const { title, totalAmount, currency } = req.body
+      const newGoal = await this.createGoalUseCase.execute({ title, totalAmount, currency, userId })
       res.status(201).json(newGoal)
 
     } catch (error) {
@@ -28,8 +33,13 @@ export class GoalController {
 
   public updateGoal = async (req: Request, res: Response): Promise<void> => {
     try {
+      const userId = req.user?.userId
+      if (!userId) {
+        res.status(401).json({ error: 'Usuario no autenticado' })
+        return
+      }
       const { id } = req.params as {id: string};
-      const { title, totalAmount, currency, userId, createdAt, finishedAt } = req.body;
+      const { title, totalAmount, currency, createdAt, finishedAt } = req.body;
       const updatedGoal = await this.updateGoalUseCase.execute({ id, title, totalAmount, currency, userId, createdAt, finishedAt });
       res.status(200).json(updatedGoal);
     } catch (error) {

@@ -1,4 +1,4 @@
-import { apiRequest, setToken, clearToken, isAuthenticated, getToken } from './httpClient'
+import { apiRequest, setToken, clearToken, isAuthenticated, getToken, getSimulationMode } from './httpClient'
 
 export interface LoginResponse {
   token: string
@@ -31,4 +31,4 @@ export function logout(): void {
   window.location.href = '/iniciar-sesion'
 }
 
-export { isAuthenticated, getToken }
+export { isAuthenticated, getToken, getSimulationMode }

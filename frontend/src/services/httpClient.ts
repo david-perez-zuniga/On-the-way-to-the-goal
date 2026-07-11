@@ -1,3 +1,5 @@
+import { matchHandler, setSimulationMode, isSimulationMode } from './offline'
+
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 const TOKEN_KEY = 'auth_token'
@@ -16,6 +18,10 @@ export function clearToken(): void {
 
 export function isAuthenticated(): boolean {
   return getToken() !== null
+}
+
+export function getSimulationMode(): boolean {
+  return isSimulationMode()
 }
 
 interface RequestOptions {
@@ -43,11 +49,25 @@ export async function apiRequest<T = unknown>(
     }
   }
 
-  const res = await fetch(url, {
-    method,
-    headers: reqHeaders,
-    body: body ? JSON.stringify(body) : undefined,
-  })
+  let res: Response
+
+  try {
+    res = await fetch(url, {
+      method,
+      headers: reqHeaders,
+      body: body ? JSON.stringify(body) : undefined,
+    })
+  } catch {
+    setSimulationMode(true)
+    const rawBody = body ? JSON.parse(JSON.stringify(body)) : undefined
+    try {
+      const result = matchHandler(method, path, rawBody, reqHeaders)
+      if (result !== undefined) return result.data as T
+    } catch {
+      // handler threw, rethrow as simulation error
+    }
+    throw new Error('Error de conexión con el servidor')
+  }
 
   if (res.status === 401) {
     clearToken()

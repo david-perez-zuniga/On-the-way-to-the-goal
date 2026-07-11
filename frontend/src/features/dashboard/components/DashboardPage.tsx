@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { isAuthenticated, logout } from '../../../services'
-import { fetchUserGoals } from '../../goals/services/goalService'
+import { fetchUserGoals, createGoal } from '../../goals/services/goalService'
 import type { GoalProgress } from '../../goals/types'
 import DashboardHeader from './DashboardHeader'
 import GoalCard from './GoalCard'
@@ -10,6 +10,7 @@ import BottomNav from './BottomNav'
 import FAB from './FAB'
 import DepositModal from './DepositModal'
 import ModifyGoalModal from './ModifyGoalModal'
+import CreateGoalModal from './CreateGoalModal'
 import { getGoalVisual } from '../utils'
 import styles from './DashboardPage.module.css'
 
@@ -34,17 +35,25 @@ export default function DashboardPage() {
     goalAmount: 0,
   })
 
+  const [createOpen, setCreateOpen] = useState(false)
+
+  const loadGoals = useCallback(() => {
+    setLoading(true)
+    setError('')
+    fetchUserGoals()
+      .then(setGoals)
+      .catch((err) => setError(err instanceof Error ? err.message : 'Error al cargar metas'))
+      .finally(() => setLoading(false))
+  }, [])
+
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate('/iniciar-sesion', { replace: true })
       return
     }
 
-    fetchUserGoals()
-      .then(setGoals)
-      .catch((err) => setError(err instanceof Error ? err.message : 'Error al cargar metas'))
-      .finally(() => setLoading(false))
-  }, [navigate])
+    loadGoals()
+  }, [navigate, loadGoals])
 
   const handleDeposit = (title: string) => {
     setDeposit({ open: true, goalTitle: title })
@@ -62,6 +71,16 @@ export default function DashboardPage() {
   const handleSave = (title: string, amount: number, currency: 'USD' | 'NIO') => {
     console.log(`Meta modificada: "${title}", ${amount} ${currency}`)
     setModify({ open: false, goalTitle: '', goalAmount: 0 })
+  }
+
+  const handleCreateGoal = async (title: string, totalAmount: number, currency: 'USD' | 'NIO') => {
+    try {
+      await createGoal({ title, totalAmount, currency })
+      setCreateOpen(false)
+      loadGoals()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al crear meta')
+    }
   }
 
   const handleLogout = () => {
@@ -86,6 +105,9 @@ export default function DashboardPage() {
           <div className={styles.emptyState}>
             <span className={`material-symbols-outlined ${styles.emptyIcon}`}>savings</span>
             <p className={styles.emptyText}>Aún no tienes una meta, crea una para verla</p>
+            <button className={styles.createBtn} onClick={() => setCreateOpen(true)}>
+              Crear meta
+            </button>
           </div>
         ) : (
           <div className={styles.grid}>
@@ -106,7 +128,7 @@ export default function DashboardPage() {
                 />
               )
             })}
-            <AddGoalCard />
+            <AddGoalCard onClick={() => setCreateOpen(true)} />
           </div>
         )}
       </main>
@@ -124,6 +146,11 @@ export default function DashboardPage() {
         goalAmount={modify.goalAmount}
         onClose={() => setModify({ open: false, goalTitle: '', goalAmount: 0 })}
         onSave={handleSave}
+      />
+      <CreateGoalModal
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onConfirm={handleCreateGoal}
       />
     </>
   )

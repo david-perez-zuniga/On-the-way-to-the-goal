@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { isAuthenticated, logout } from '../../../services'
-import { fetchUserGoals, createGoal, createDeposit } from '../../goals/services/goalService'
+import { fetchUserGoals, createGoal, createDeposit, updateGoal } from '../../goals/services/goalService'
 import type { GoalProgress } from '../../goals/types'
 import DashboardHeader from './DashboardHeader'
 import GoalCard from './GoalCard'
@@ -29,13 +29,20 @@ export default function DashboardPage() {
 
   const [modify, setModify] = useState<{
     open: boolean
+    goalId: string
     goalTitle: string
     goalAmount: number
+    createdAt: string
+    finishedAt: string | null
   }>({
     open: false,
+    goalId: '',
     goalTitle: '',
     goalAmount: 0,
+    createdAt: '',
+    finishedAt: null,
   })
+  const [modifying, setModifying] = useState(false)
 
   const [createOpen, setCreateOpen] = useState(false)
 
@@ -74,13 +81,27 @@ export default function DashboardPage() {
     }
   }
 
-  const handleModify = (title: string, amount: number) => {
-    setModify({ open: true, goalTitle: title, goalAmount: amount })
+  const handleModify = (id: string, title: string, amount: number, createdAt: string, finishedAt: string | null) => {
+    setModify({ open: true, goalId: id, goalTitle: title, goalAmount: amount, createdAt, finishedAt })
   }
 
-  const handleSave = (title: string, amount: number, currency: 'USD' | 'NIO') => {
-    console.log(`Meta modificada: "${title}", ${amount} ${currency}`)
-    setModify({ open: false, goalTitle: '', goalAmount: 0 })
+  const handleSave = async (title: string, amount: number, currency: 'USD' | 'NIO') => {
+    setModifying(true)
+    try {
+      await updateGoal(modify.goalId, {
+        title,
+        totalAmount: amount,
+        currency,
+        createdAt: modify.createdAt,
+        finishedAt: modify.finishedAt,
+      })
+      setModify({ open: false, goalId: '', goalTitle: '', goalAmount: 0, createdAt: '', finishedAt: null })
+      loadGoals()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al modificar la meta')
+    } finally {
+      setModifying(false)
+    }
   }
 
   const handleCreateGoal = async (title: string, totalAmount: number, currency: 'USD' | 'NIO') => {
@@ -134,7 +155,7 @@ export default function DashboardPage() {
                   currentAmount={goal.currentAmount}
                   percentage={goal.percentage}
                     onDeposit={() => handleDeposit(goal.id, goal.title)}
-                  onModify={() => handleModify(goal.title, goal.totalAmount)}
+                  onModify={() => handleModify(goal.id, goal.title, goal.totalAmount, goal.createdAt, goal.finishedAt)}
                 />
               )
             })}
@@ -155,7 +176,8 @@ export default function DashboardPage() {
         open={modify.open}
         goalTitle={modify.goalTitle}
         goalAmount={modify.goalAmount}
-        onClose={() => setModify({ open: false, goalTitle: '', goalAmount: 0 })}
+        loading={modifying}
+        onClose={() => setModify({ open: false, goalId: '', goalTitle: '', goalAmount: 0, createdAt: '', finishedAt: null })}
         onSave={handleSave}
       />
       <CreateGoalModal

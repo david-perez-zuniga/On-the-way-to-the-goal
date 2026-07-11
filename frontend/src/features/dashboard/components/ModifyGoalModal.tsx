@@ -6,6 +6,7 @@ interface ModifyGoalModalProps {
   open: boolean
   goalTitle: string
   goalAmount: number
+  loading?: boolean
   onClose: () => void
   onSave: (title: string, amount: number, currency: 'USD' | 'NIO') => void
 }
@@ -14,6 +15,7 @@ export default function ModifyGoalModal({
   open,
   goalTitle,
   goalAmount,
+  loading,
   onClose,
   onSave,
 }: ModifyGoalModalProps) {
@@ -25,7 +27,7 @@ export default function ModifyGoalModal({
 
   const handleSave = () => {
     const parsed = parseFloat(amount)
-    if (title.trim() && parsed > 0) {
+    if (title.trim() && parsed > 0 && !loading) {
       onSave(title.trim(), parsed, currency)
     }
   }
@@ -89,10 +91,10 @@ export default function ModifyGoalModal({
             </div>
           </div>
           <div className={styles.actions}>
-            <Button variant="gradientPrimary" onClick={handleSave}>
-              Guardar Cambios
+            <Button variant="gradientPrimary" onClick={handleSave} disabled={loading}>
+              {loading ? 'Guardando...' : 'Guardar Cambios'}
             </Button>
-            <button className={styles.cancel} onClick={onClose}>
+            <button className={styles.cancel} onClick={onClose} disabled={loading}>
               Cancelar
             </button>
           </div>

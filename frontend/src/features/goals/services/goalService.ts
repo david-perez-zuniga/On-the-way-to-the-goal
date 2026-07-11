@@ -18,3 +18,13 @@ export async function createDeposit(goalId: string, deposit: number, currency: s
     body: { goalId, deposit, currency },
   })
 }
+
+export async function updateGoal(
+  id: string,
+  data: { title: string; totalAmount: number; currency: string; createdAt: string; finishedAt: string | null }
+): Promise<void> {
+  await apiRequest(`/api/goals/${id}`, {
+    method: 'PUT',
+    body: data,
+  })
+}

@@ -28,3 +28,9 @@ export async function updateGoal(
     body: data,
   })
 }
+
+export async function deleteGoal(id: string): Promise<void> {
+  await apiRequest(`/api/goals/${id}`, {
+    method: 'DELETE',
+  })
+}

@@ -11,6 +11,7 @@ import FAB from './FAB'
 import DepositModal from './DepositModal'
 import ModifyGoalModal from './ModifyGoalModal'
 import CreateGoalModal from './CreateGoalModal'
+import PaymentHistoryModal from './PaymentHistoryModal'
 import { getGoalVisual } from '../utils'
 import styles from './DashboardPage.module.css'
 
@@ -48,6 +49,12 @@ export default function DashboardPage() {
   const [modifyError, setModifyError] = useState('')
 
   const [createOpen, setCreateOpen] = useState(false)
+
+  const [history, setHistory] = useState<{ open: boolean; goalId: string; goalTitle: string }>({
+    open: false,
+    goalId: '',
+    goalTitle: '',
+  })
 
   const [deleteConfirm, setDeleteConfirm] = useState<{ goalId: string; goalTitle: string } | null>(null)
 
@@ -109,6 +116,10 @@ export default function DashboardPage() {
     } finally {
       setModifying(false)
     }
+  }
+
+  const handleHistory = (id: string, title: string) => {
+    setHistory({ open: true, goalId: id, goalTitle: title })
   }
 
   const handleDeleteClick = (id: string, title: string) => {
@@ -179,6 +190,7 @@ export default function DashboardPage() {
                     onDeposit={() => handleDeposit(goal.id, goal.title)}
                     onModify={() => handleModify(goal.id, goal.title, goal.totalAmount, goal.currency as 'USD' | 'NIO', goal.createdAt, goal.finishedAt)}
                     onDelete={() => handleDeleteClick(goal.id, goal.title)}
+                    onHistory={() => handleHistory(goal.id, goal.title)}
                 />
               )
             })}
@@ -214,6 +226,12 @@ export default function DashboardPage() {
         open={createOpen}
         onClose={() => setCreateOpen(false)}
         onConfirm={handleCreateGoal}
+      />
+      <PaymentHistoryModal
+        open={history.open}
+        goalId={history.goalId}
+        goalTitle={history.goalTitle}
+        onClose={() => setHistory({ open: false, goalId: '', goalTitle: '' })}
       />
       {deleteConfirm && (
         <div className={styles.overlay} onClick={() => setDeleteConfirm(null)}>

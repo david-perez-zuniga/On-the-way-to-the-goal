@@ -14,6 +14,7 @@ interface GoalCardProps {
   onDeposit?: () => void
   onModify?: () => void
   onDelete?: () => void
+  onHistory?: () => void
 }
 
 function formatCurrency(amount: number): string {
@@ -37,6 +38,7 @@ export default function GoalCard({
   onDeposit,
   onModify,
   onDelete,
+  onHistory,
 }: GoalCardProps) {
   return (
     <div className={styles.card}>
@@ -58,7 +60,8 @@ export default function GoalCard({
         {actions ?? (
           <div className={styles.actions}>
             <Button variant="gradientPrimary" onClick={onDeposit}>Invertir</Button>
-            <Button variant="outline" onClick={onModify}>Modificar</Button>
+            <Button variant="outline" size="sm" onClick={onHistory}>Resumen</Button>
+            <Button variant="outline" size="sm" onClick={onModify}>Modificar</Button>
             <button className={styles.deleteBtn} onClick={onDelete} title="Eliminar meta">
               <span className="material-symbols-outlined">delete</span>
             </button>

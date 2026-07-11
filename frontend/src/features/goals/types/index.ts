@@ -15,3 +15,11 @@ export interface CreateGoalDTO {
   totalAmount: number
   currency: string
 }
+
+export interface Payment {
+  id: string
+  deposit: number
+  depositDate: string
+  currency: string
+  goalId: string
+}

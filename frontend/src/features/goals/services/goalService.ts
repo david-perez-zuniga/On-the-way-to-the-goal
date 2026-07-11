@@ -1,5 +1,5 @@
 import { apiRequest } from '../../../services/httpClient'
-import type { GoalProgress, CreateGoalDTO } from '../types'
+import type { GoalProgress, CreateGoalDTO, Payment } from '../types'
 
 export async function fetchUserGoals(): Promise<GoalProgress[]> {
   return apiRequest<GoalProgress[]>('/api/goals')
@@ -33,4 +33,8 @@ export async function deleteGoal(id: string): Promise<void> {
   await apiRequest(`/api/goals/${id}`, {
     method: 'DELETE',
   })
+}
+
+export async function fetchPaymentHistory(goalId: string): Promise<Payment[]> {
+  return apiRequest<Payment[]>(`/api/payment/goal/${goalId}`)
 }

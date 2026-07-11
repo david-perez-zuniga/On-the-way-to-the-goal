@@ -10,7 +10,7 @@ interface ModifyGoalModalProps {
   loading?: boolean
   error?: string
   onClose: () => void
-  onSave: (title: string, amount: number, currency: 'USD' | 'NIO') => void
+  onSave: (title: string, amount: number) => void
 }
 
 export default function ModifyGoalModal({
@@ -25,18 +25,17 @@ export default function ModifyGoalModal({
 }: ModifyGoalModalProps) {
   const [title, setTitle] = useState(goalTitle)
   const [amount, setAmount] = useState(String(goalAmount))
-  const [currency, setCurrency] = useState<'USD' | 'NIO'>(goalCurrency)
 
   if (!open) return null
 
   const handleSave = () => {
     const parsed = parseFloat(amount)
     if (title.trim() && parsed > 0 && !loading) {
-      onSave(title.trim(), parsed, currency)
+      onSave(title.trim(), parsed)
     }
   }
 
-  const prefixSymbol = currency === 'USD' ? '$' : 'C$'
+  const prefixSymbol = goalCurrency === 'USD' ? '$' : 'C$'
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -76,23 +75,6 @@ export default function ModifyGoalModal({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />
-            </div>
-          </div>
-          <div className={styles.field}>
-            <label className={styles.label}>Moneda</label>
-            <div className={styles.toggle}>
-              <button
-                className={`${styles.toggleBtn} ${currency === 'USD' ? styles.active : ''}`}
-                onClick={() => setCurrency('USD')}
-              >
-                Dólares
-              </button>
-              <button
-                className={`${styles.toggleBtn} ${currency === 'NIO' ? styles.active : ''}`}
-                onClick={() => setCurrency('NIO')}
-              >
-                Córdobas
-              </button>
             </div>
           </div>
           <div className={styles.actions}>

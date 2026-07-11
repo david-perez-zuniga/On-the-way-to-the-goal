@@ -6,6 +6,7 @@ interface ModifyGoalModalProps {
   open: boolean
   goalTitle: string
   goalAmount: number
+  goalCurrency: 'USD' | 'NIO'
   loading?: boolean
   error?: string
   onClose: () => void
@@ -16,6 +17,7 @@ export default function ModifyGoalModal({
   open,
   goalTitle,
   goalAmount,
+  goalCurrency,
   loading,
   error,
   onClose,
@@ -23,7 +25,7 @@ export default function ModifyGoalModal({
 }: ModifyGoalModalProps) {
   const [title, setTitle] = useState(goalTitle)
   const [amount, setAmount] = useState(String(goalAmount))
-  const [currency, setCurrency] = useState<'USD' | 'NIO'>('USD')
+  const [currency, setCurrency] = useState<'USD' | 'NIO'>(goalCurrency)
 
   if (!open) return null
 

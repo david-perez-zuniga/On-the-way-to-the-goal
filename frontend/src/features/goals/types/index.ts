@@ -9,3 +9,9 @@ export interface GoalProgress {
   updatedAt: string
   finishedAt: string | null
 }
+
+export interface CreateGoalDTO {
+  title: string
+  totalAmount: number
+  currency: string
+}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { isAuthenticated, logout } from '../../../services'
+import { isAuthenticated, logout, getSimulationMode } from '../../../services'
 import { fetchUserGoals, createGoal, createDeposit, updateGoal, deleteGoal } from '../../goals/services/goalService'
 import type { GoalProgress } from '../../goals/types'
 import DashboardHeader from './DashboardHeader'
@@ -8,6 +8,7 @@ import GoalCard from './GoalCard'
 import AddGoalCard from './AddGoalCard'
 import BottomNav from './BottomNav'
 import FAB from './FAB'
+import SimulationBanner from '../../../components/SimulationBanner'
 import DepositModal from './DepositModal'
 import ModifyGoalModal from './ModifyGoalModal'
 import CreateGoalModal from './CreateGoalModal'
@@ -154,6 +155,7 @@ export default function DashboardPage() {
   return (
     <>
       <DashboardHeader onLogout={handleLogout} />
+      {getSimulationMode() && <SimulationBanner />}
       <main className={styles.main}>
         <div className={styles.header}>
           <h2 className={styles.pageTitle}>Mis Metas de Ahorro</h2>

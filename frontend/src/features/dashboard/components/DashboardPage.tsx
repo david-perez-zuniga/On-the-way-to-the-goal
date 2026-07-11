@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { isAuthenticated, logout } from '../../../services'
-import { fetchUserGoals, createGoal, createDeposit, updateGoal } from '../../goals/services/goalService'
+import { fetchUserGoals, createGoal, createDeposit, updateGoal, deleteGoal } from '../../goals/services/goalService'
 import type { GoalProgress } from '../../goals/types'
 import DashboardHeader from './DashboardHeader'
 import GoalCard from './GoalCard'
@@ -49,6 +49,8 @@ export default function DashboardPage() {
 
   const [createOpen, setCreateOpen] = useState(false)
 
+  const [deleteConfirm, setDeleteConfirm] = useState<{ goalId: string; goalTitle: string } | null>(null)
+
   const loadGoals = useCallback(() => {
     setLoading(true)
     setError('')
@@ -89,14 +91,14 @@ export default function DashboardPage() {
     setModifyError('')
   }
 
-  const handleSave = async (title: string, amount: number, currency: 'USD' | 'NIO') => {
+  const handleSave = async (title: string, amount: number) => {
     setModifying(true)
     setModifyError('')
     try {
       await updateGoal(modify.goalId, {
         title,
         totalAmount: amount,
-        currency,
+        currency: modify.goalCurrency,
         createdAt: new Date(modify.createdAt).toISOString(),
         finishedAt: modify.finishedAt ? new Date(modify.finishedAt).toISOString() : null,
       })
@@ -106,6 +108,21 @@ export default function DashboardPage() {
       setModifyError(err instanceof Error ? err.message : 'Error al modificar la meta')
     } finally {
       setModifying(false)
+    }
+  }
+
+  const handleDeleteClick = (id: string, title: string) => {
+    setDeleteConfirm({ goalId: id, goalTitle: title })
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteConfirm) return
+    try {
+      await deleteGoal(deleteConfirm.goalId)
+      setDeleteConfirm(null)
+      loadGoals()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al eliminar la meta')
     }
   }
 
@@ -161,6 +178,7 @@ export default function DashboardPage() {
                   percentage={goal.percentage}
                     onDeposit={() => handleDeposit(goal.id, goal.title)}
                     onModify={() => handleModify(goal.id, goal.title, goal.totalAmount, goal.currency as 'USD' | 'NIO', goal.createdAt, goal.finishedAt)}
+                    onDelete={() => handleDeleteClick(goal.id, goal.title)}
                 />
               )
             })}
@@ -197,6 +215,23 @@ export default function DashboardPage() {
         onClose={() => setCreateOpen(false)}
         onConfirm={handleCreateGoal}
       />
+      {deleteConfirm && (
+        <div className={styles.overlay} onClick={() => setDeleteConfirm(null)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <p className={styles.modalText}>
+              ¿Estás seguro de eliminar la meta "{deleteConfirm.goalTitle}"?
+            </p>
+            <div className={styles.modalActions}>
+              <button className={styles.confirmBtn} onClick={handleDeleteConfirm}>
+                Sí, eliminar
+              </button>
+              <button className={styles.cancelBtn} onClick={() => setDeleteConfirm(null)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

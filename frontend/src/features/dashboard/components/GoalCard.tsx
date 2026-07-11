@@ -13,6 +13,7 @@ interface GoalCardProps {
   actions?: ReactNode
   onDeposit?: () => void
   onModify?: () => void
+  onDelete?: () => void
 }
 
 function formatCurrency(amount: number): string {
@@ -35,6 +36,7 @@ export default function GoalCard({
   actions,
   onDeposit,
   onModify,
+  onDelete,
 }: GoalCardProps) {
   return (
     <div className={styles.card}>
@@ -57,6 +59,9 @@ export default function GoalCard({
           <div className={styles.actions}>
             <Button variant="gradientPrimary" onClick={onDeposit}>Invertir</Button>
             <Button variant="outline" onClick={onModify}>Modificar</Button>
+            <button className={styles.deleteBtn} onClick={onDelete} title="Eliminar meta">
+              <span className="material-symbols-outlined">delete</span>
+            </button>
           </div>
         )}
       </div>

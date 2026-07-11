@@ -98,4 +98,24 @@
 .actions {
   display: flex;
   gap: 0.75rem;
+  align-items: center;
+}
+
+.deleteBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-error, #e53935);
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg, 0.5rem);
+  transition: background 0.2s;
+  margin-left: auto;
+}
+
+.deleteBtn:hover {
+  background: rgba(229, 57, 53, 0.1);
 }

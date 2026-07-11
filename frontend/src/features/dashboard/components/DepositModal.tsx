@@ -5,11 +5,12 @@ import styles from './DepositModal.module.css'
 interface DepositModalProps {
   open: boolean
   goalTitle: string
+  loading?: boolean
   onClose: () => void
   onConfirm: (amount: number, currency: 'USD' | 'NIO') => void
 }
 
-export default function DepositModal({ open, goalTitle, onClose, onConfirm }: DepositModalProps) {
+export default function DepositModal({ open, goalTitle, loading, onClose, onConfirm }: DepositModalProps) {
   const [amount, setAmount] = useState('')
   const [currency, setCurrency] = useState<'USD' | 'NIO'>('USD')
 
@@ -17,7 +18,7 @@ export default function DepositModal({ open, goalTitle, onClose, onConfirm }: De
 
   const handleConfirm = () => {
     const parsed = parseFloat(amount)
-    if (parsed > 0) {
+    if (parsed > 0 && !loading) {
       onConfirm(parsed, currency)
       setAmount('')
     }
@@ -67,10 +68,10 @@ export default function DepositModal({ open, goalTitle, onClose, onConfirm }: De
             </div>
           </div>
           <div className={styles.actions}>
-            <Button variant="gradientPrimary" onClick={handleConfirm}>
-              Confirmar Inversión
+            <Button variant="gradientPrimary" onClick={handleConfirm} disabled={loading}>
+              {loading ? 'Procesando...' : 'Confirmar Inversión'}
             </Button>
-            <button className={styles.cancel} onClick={onClose}>
+            <button className={styles.cancel} onClick={onClose} disabled={loading}>
               Cancelar
             </button>
           </div>

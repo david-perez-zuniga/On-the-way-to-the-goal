@@ -11,3 +11,10 @@ export async function createGoal(data: CreateGoalDTO): Promise<void> {
     body: data,
   })
 }
+
+export async function createDeposit(goalId: string, deposit: number, currency: string): Promise<void> {
+  await apiRequest('/api/payment', {
+    method: 'POST',
+    body: { goalId, deposit, currency },
+  })
+}

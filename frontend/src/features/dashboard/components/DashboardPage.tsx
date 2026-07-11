@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { isAuthenticated, logout } from '../../../services'
-import { fetchUserGoals, createGoal } from '../../goals/services/goalService'
+import { fetchUserGoals, createGoal, createDeposit } from '../../goals/services/goalService'
 import type { GoalProgress } from '../../goals/types'
 import DashboardHeader from './DashboardHeader'
 import GoalCard from './GoalCard'
@@ -20,10 +20,12 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  const [deposit, setDeposit] = useState<{ open: boolean; goalTitle: string }>({
+  const [deposit, setDeposit] = useState<{ open: boolean; goalId: string; goalTitle: string }>({
     open: false,
+    goalId: '',
     goalTitle: '',
   })
+  const [depositing, setDepositing] = useState(false)
 
   const [modify, setModify] = useState<{
     open: boolean
@@ -55,13 +57,21 @@ export default function DashboardPage() {
     loadGoals()
   }, [navigate, loadGoals])
 
-  const handleDeposit = (title: string) => {
-    setDeposit({ open: true, goalTitle: title })
+  const handleDeposit = (id: string, title: string) => {
+    setDeposit({ open: true, goalId: id, goalTitle: title })
   }
 
-  const handleConfirm = (amount: number, currency: 'USD' | 'NIO') => {
-    console.log(`Depósito: ${amount} ${currency} a "${deposit.goalTitle}"`)
-    setDeposit({ open: false, goalTitle: '' })
+  const handleConfirm = async (amount: number, currency: 'USD' | 'NIO') => {
+    setDepositing(true)
+    try {
+      await createDeposit(deposit.goalId, amount, currency)
+      setDeposit({ open: false, goalId: '', goalTitle: '' })
+      loadGoals()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al realizar el depósito')
+    } finally {
+      setDepositing(false)
+    }
   }
 
   const handleModify = (title: string, amount: number) => {
@@ -123,7 +133,7 @@ export default function DashboardPage() {
                   goalAmount={goal.totalAmount}
                   currentAmount={goal.currentAmount}
                   percentage={goal.percentage}
-                  onDeposit={() => handleDeposit(goal.title)}
+                    onDeposit={() => handleDeposit(goal.id, goal.title)}
                   onModify={() => handleModify(goal.title, goal.totalAmount)}
                 />
               )
@@ -137,7 +147,8 @@ export default function DashboardPage() {
       <DepositModal
         open={deposit.open}
         goalTitle={deposit.goalTitle}
-        onClose={() => setDeposit({ open: false, goalTitle: '' })}
+        loading={depositing}
+        onClose={() => setDeposit({ open: false, goalId: '', goalTitle: '' })}
         onConfirm={handleConfirm}
       />
       <ModifyGoalModal

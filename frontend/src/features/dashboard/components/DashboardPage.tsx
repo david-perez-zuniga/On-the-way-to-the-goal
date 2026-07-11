@@ -43,6 +43,7 @@ export default function DashboardPage() {
     finishedAt: null,
   })
   const [modifying, setModifying] = useState(false)
+  const [modifyError, setModifyError] = useState('')
 
   const [createOpen, setCreateOpen] = useState(false)
 
@@ -83,22 +84,24 @@ export default function DashboardPage() {
 
   const handleModify = (id: string, title: string, amount: number, createdAt: string, finishedAt: string | null) => {
     setModify({ open: true, goalId: id, goalTitle: title, goalAmount: amount, createdAt, finishedAt })
+    setModifyError('')
   }
 
   const handleSave = async (title: string, amount: number, currency: 'USD' | 'NIO') => {
     setModifying(true)
+    setModifyError('')
     try {
       await updateGoal(modify.goalId, {
         title,
         totalAmount: amount,
         currency,
-        createdAt: modify.createdAt,
-        finishedAt: modify.finishedAt,
+        createdAt: new Date(modify.createdAt).toISOString(),
+        finishedAt: modify.finishedAt ? new Date(modify.finishedAt).toISOString() : null,
       })
       setModify({ open: false, goalId: '', goalTitle: '', goalAmount: 0, createdAt: '', finishedAt: null })
       loadGoals()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al modificar la meta')
+      setModifyError(err instanceof Error ? err.message : 'Error al modificar la meta')
     } finally {
       setModifying(false)
     }
@@ -177,7 +180,11 @@ export default function DashboardPage() {
         goalTitle={modify.goalTitle}
         goalAmount={modify.goalAmount}
         loading={modifying}
-        onClose={() => setModify({ open: false, goalId: '', goalTitle: '', goalAmount: 0, createdAt: '', finishedAt: null })}
+        error={modifyError}
+        onClose={() => {
+          setModify({ open: false, goalId: '', goalTitle: '', goalAmount: 0, createdAt: '', finishedAt: null })
+          setModifyError('')
+        }}
         onSave={handleSave}
       />
       <CreateGoalModal

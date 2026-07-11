@@ -7,6 +7,7 @@ interface ModifyGoalModalProps {
   goalTitle: string
   goalAmount: number
   loading?: boolean
+  error?: string
   onClose: () => void
   onSave: (title: string, amount: number, currency: 'USD' | 'NIO') => void
 }
@@ -16,6 +17,7 @@ export default function ModifyGoalModal({
   goalTitle,
   goalAmount,
   loading,
+  error,
   onClose,
   onSave,
 }: ModifyGoalModalProps) {
@@ -44,6 +46,7 @@ export default function ModifyGoalModal({
           </button>
         </div>
         <div className={styles.body}>
+          {error && <p className={styles.error}>{error}</p>}
           <div className={styles.field}>
             <label className={styles.label} htmlFor="modify-title">
               Título de la meta

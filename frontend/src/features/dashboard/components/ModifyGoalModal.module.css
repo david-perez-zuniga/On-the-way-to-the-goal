@@ -180,6 +180,14 @@
   color: var(--color-primary);
 }
 
+.error {
+  font-family: var(--font-body-sm);
+  font-size: var(--fs-body-sm);
+  color: var(--color-error);
+  margin: 0;
+  text-align: center;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

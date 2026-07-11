@@ -32,6 +32,7 @@ export default function DashboardPage() {
     goalId: string
     goalTitle: string
     goalAmount: number
+    goalCurrency: 'USD' | 'NIO'
     createdAt: string
     finishedAt: string | null
   }>({
@@ -39,6 +40,7 @@ export default function DashboardPage() {
     goalId: '',
     goalTitle: '',
     goalAmount: 0,
+    goalCurrency: 'USD',
     createdAt: '',
     finishedAt: null,
   })
@@ -82,8 +84,8 @@ export default function DashboardPage() {
     }
   }
 
-  const handleModify = (id: string, title: string, amount: number, createdAt: string, finishedAt: string | null) => {
-    setModify({ open: true, goalId: id, goalTitle: title, goalAmount: amount, createdAt, finishedAt })
+  const handleModify = (id: string, title: string, amount: number, currency: 'USD' | 'NIO', createdAt: string, finishedAt: string | null) => {
+    setModify({ open: true, goalId: id, goalTitle: title, goalAmount: amount, goalCurrency: currency, createdAt, finishedAt })
     setModifyError('')
   }
 
@@ -98,7 +100,7 @@ export default function DashboardPage() {
         createdAt: new Date(modify.createdAt).toISOString(),
         finishedAt: modify.finishedAt ? new Date(modify.finishedAt).toISOString() : null,
       })
-      setModify({ open: false, goalId: '', goalTitle: '', goalAmount: 0, createdAt: '', finishedAt: null })
+      setModify({ open: false, goalId: '', goalTitle: '', goalAmount: 0, goalCurrency: 'USD', createdAt: '', finishedAt: null })
       loadGoals()
     } catch (err) {
       setModifyError(err instanceof Error ? err.message : 'Error al modificar la meta')
@@ -158,7 +160,7 @@ export default function DashboardPage() {
                   currentAmount={goal.currentAmount}
                   percentage={goal.percentage}
                     onDeposit={() => handleDeposit(goal.id, goal.title)}
-                  onModify={() => handleModify(goal.id, goal.title, goal.totalAmount, goal.createdAt, goal.finishedAt)}
+                    onModify={() => handleModify(goal.id, goal.title, goal.totalAmount, goal.currency as 'USD' | 'NIO', goal.createdAt, goal.finishedAt)}
                 />
               )
             })}
@@ -175,18 +177,21 @@ export default function DashboardPage() {
         onClose={() => setDeposit({ open: false, goalId: '', goalTitle: '' })}
         onConfirm={handleConfirm}
       />
-      <ModifyGoalModal
-        open={modify.open}
-        goalTitle={modify.goalTitle}
-        goalAmount={modify.goalAmount}
-        loading={modifying}
-        error={modifyError}
-        onClose={() => {
-          setModify({ open: false, goalId: '', goalTitle: '', goalAmount: 0, createdAt: '', finishedAt: null })
-          setModifyError('')
-        }}
-        onSave={handleSave}
-      />
+      {modify.open && (
+        <ModifyGoalModal
+          open={modify.open}
+          goalTitle={modify.goalTitle}
+          goalAmount={modify.goalAmount}
+          goalCurrency={modify.goalCurrency}
+          loading={modifying}
+          error={modifyError}
+          onClose={() => {
+            setModify({ open: false, goalId: '', goalTitle: '', goalAmount: 0, goalCurrency: 'USD', createdAt: '', finishedAt: null })
+            setModifyError('')
+          }}
+          onSave={handleSave}
+        />
+      )}
       <CreateGoalModal
         open={createOpen}
         onClose={() => setCreateOpen(false)}

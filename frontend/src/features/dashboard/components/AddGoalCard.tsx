@@ -1,8 +1,12 @@
 import styles from './AddGoalCard.module.css'
 
-export default function AddGoalCard() {
+interface AddGoalCardProps {
+  onClick?: () => void
+}
+
+export default function AddGoalCard({ onClick }: AddGoalCardProps) {
   return (
-    <button className={styles.button}>
+    <button className={styles.button} onClick={onClick}>
       <div className={styles.iconCircle}>
         <span className={`material-symbols-outlined ${styles.icon}`}>add</span>
       </div>

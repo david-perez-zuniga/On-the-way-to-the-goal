@@ -85,10 +85,9 @@ export class PrismaGoalRepository implements IGoalRepository {
   }
 
   public async delete(id: string): Promise<void>{
-    await prisma.goal.delete({
-      where: {
-        id: id,
-      }
-    });
+    await prisma.$transaction([
+      prisma.payment.deleteMany({ where: { goalId: id } }),
+      prisma.goal.delete({ where: { id: id } }),
+    ]);
   }
 }

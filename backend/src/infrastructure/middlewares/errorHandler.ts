@@ -1,5 +1,5 @@
 import { type ErrorRequestHandler, type Request, type Response, type NextFunction } from 'express'
-import { AppError, ValidationError, NotFoundError, ConflictError, ForbiddenError } from '../../domain/errors/AppError'
+import { AppError, ValidationError, NotFoundError, ConflictError, ForbiddenError, UnauthorizedError } from '../../domain/errors/AppError'
 
 /**
  * Global error handler.
@@ -90,6 +90,9 @@ function mapDomainError(error: AppError): MappedStatus {
   }
   if (error instanceof NotFoundError) {
     return { status: 404, body: { error: error.message, code: error.code } }
+  }
+  if (error instanceof UnauthorizedError) {
+    return { status: 401, body: { error: error.message, code: error.code } }
   }
   if (error instanceof ForbiddenError) {
     // Deliberately 404 rather than 403: a 403 would confirm that the resource exists.

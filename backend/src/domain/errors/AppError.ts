@@ -38,6 +38,15 @@ export class ConflictError extends AppError {
   }
 }
 
+/** Authentication failed. Maps to 401. Must be used only for genuine credential
+ *  failures: previously every error in the login path collapsed into a 401, which hid
+ *  real outages behind "invalid credentials". */
+export class UnauthorizedError extends AppError {
+  constructor(message = 'Credenciales inválidas') {
+    super(message, 'UNAUTHORIZED')
+  }
+}
+
 /** The caller is authenticated but does not own the target resource. Maps to 404, not 403,
  *  so that ownership probing does not confirm the resource exists. */
 export class ForbiddenError extends AppError {

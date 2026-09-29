@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-
-const JWT_SECRET = process.env.JWT_SECRET ?? 'SECRETO'
+import { getJwtSecret } from '../config/env'
+import { UnauthorizedError } from '../../domain/errors/AppError'
 
 export interface JWTPayload {
   userId: string
@@ -15,24 +15,45 @@ declare global {
   }
 }
 
+/** RFC 6750 section 2.1: the credentials parameter is the literal string "Bearer " followed
+ *  by the token. The scheme must be present and exact. */
+const BEARER_PREFIX = /^Bearer[ \t]+(.+)$/i
+
 export function authenticate(req: Request, res: Response, next: NextFunction): void {
   try {
     const header = req.headers.authorization
-    if (!header) {
-      res.status(401).json({ error: 'Token no proporcionado' })
-      return
+    if (!header || typeof header !== 'string') {
+      throw new UnauthorizedError('Token no proporcionado')
     }
 
-    const token = header.replace('Bearer ', '')
-    if (!token) {
-      res.status(401).json({ error: 'Token no proporcionado' })
-      return
+    // Previously `header.replace('Bearer ', '')` ignored the scheme entirely, so a raw
+    // token with no prefix authenticated, and any other prefix was left attached to the
+    // token and failed verification. The scheme is now required and validated.
+    const match = BEARER_PREFIX.exec(header.trim())
+    if (!match) {
+      throw new UnauthorizedError('Esquema de autorización inválido')
     }
 
-    const payload = jwt.verify(token, JWT_SECRET) as JWTPayload
+    const token = match[1]
+    if (!token || token.length > 4096) {
+      throw new UnauthorizedError('Token no proporcionado')
+    }
+
+    const payload = jwt.verify(token, getJwtSecret()) as JWTPayload
+
+    if (typeof payload?.userId !== 'string' || payload.userId.length === 0) {
+      throw new UnauthorizedError('Token inválido o expirado')
+    }
+
     req.user = payload
     next()
-  } catch {
-    res.status(401).json({ error: 'Token inválido o expirado' })
+  } catch (error) {
+    if (error instanceof UnauthorizedError) {
+      res.status(401).json({ error: error.message, code: error.code })
+      return
+    }
+    // An invalid signature, an expired token, or a configuration fault. Never leaked
+    // verbatim to the client.
+    res.status(401).json({ error: 'Token inválido o expirado', code: 'UNAUTHORIZED' })
   }
 }

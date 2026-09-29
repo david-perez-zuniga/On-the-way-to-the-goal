@@ -73,6 +73,20 @@ function mapBodyParserError(error: unknown): MappedStatus | null {
     }
   }
   if (err.type === 'entity.parse.failed' || (err instanceof SyntaxError && 'body' in err)) {
+    // body-parser reports a strict-mode violation when the payload parses but its top
+    // level is not an object or an array. A body of literal `null`, `"text"` or `42` is
+    // perfectly valid JSON, so telling the client it "is not valid JSON" is simply false
+    // and sends them looking for a syntax error that does not exist. The two cases are
+    // separated so the contract stays truthful.
+    if (typeof err.message === 'string' && err.message.includes('strict violation')) {
+      return {
+        status: 400,
+        body: {
+          error: 'El cuerpo de la petición debe ser un objeto JSON',
+          code: 'INVALID_BODY_SHAPE',
+        },
+      }
+    }
     return {
       status: 400,
       body: { error: 'El cuerpo de la petición no es JSON válido', code: 'MALFORMED_JSON' },
@@ -103,9 +117,6 @@ function mapDomainError(error: AppError): MappedStatus {
   }
   return { status: 400, body: { error: error.message, code: error.code } }
 }
-
-/** Errors that are the caller's fault, not the server's. Never logged, never a 5XX. */
-const CLIENT_ATTRIBUTABLE: ReadonlySet<number> = new Set([400, 401, 403, 404, 409, 413, 422])
 
 export function errorHandler(
   error: unknown,
@@ -140,5 +151,3 @@ export function errorHandler(
 export function notFoundHandler(_req: Request, res: Response): void {
   res.status(404).json({ error: 'Ruta no encontrada', code: 'NOT_FOUND' })
 }
-
-export { CLIENT_ATTRIBUTABLE }

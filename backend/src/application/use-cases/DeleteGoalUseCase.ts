@@ -1,5 +1,4 @@
 import { type IGoalRepository } from '../../domain/repositories/IGoalRepository';
-import { NotFoundError } from '../../domain/errors/AppError';
 
 export interface DeleteGoalDTO {
   id: string;
@@ -14,5 +13,3 @@ export class DeleteGoalUseCase {
     await this.goalRepository.delete(data.id, data.userId);
   }
 }
-
-export { NotFoundError }

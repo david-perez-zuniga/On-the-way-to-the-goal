@@ -1,6 +1,6 @@
 import { type Request, type Response, type NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-import { getJwtSecret } from '../config/env'
+import { getJwtSecret, ConfigurationError } from '../config/env'
 import { UnauthorizedError } from '../../domain/errors/AppError'
 
 export interface JWTPayload {
@@ -52,8 +52,18 @@ export function authenticate(req: Request, res: Response, next: NextFunction): v
       res.status(401).json({ error: error.message, code: error.code })
       return
     }
-    // An invalid signature, an expired token, or a configuration fault. Never leaked
-    // verbatim to the client.
+
+    // A configuration fault must not be reported to the caller as "unauthorized". Doing so
+    // would make a broken JWT_SECRET look like a fleet of invalid credentials: every
+    // authenticated request would answer 401, clients would conclude their tokens were
+    // bad, and monitoring would see no server fault at all. This is the same
+    // outage-masking mistake that used to collapse every login error into a 401.
+    if (error instanceof ConfigurationError) {
+      next(error)
+      return
+    }
+
+    // An invalid signature or an expired token. Never leaked verbatim to the client.
     res.status(401).json({ error: 'Token inválido o expirado', code: 'UNAUTHORIZED' })
   }
 }

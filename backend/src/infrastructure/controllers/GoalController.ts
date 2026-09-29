@@ -50,13 +50,13 @@ export class GoalController {
     const title = requireString(body.title, 'title', { max: 120 })
     const totalAmount = requireMoney(body.totalAmount, 'totalAmount')
     const currency = requireCurrency(body.currency)
-    const createdAt = requireOptionalDate(body.createdAt, 'createdAt')
     const finishedAt = requireOptionalDate(body.finishedAt, 'finishedAt')
 
-    // `createdAt` is not client-writable on an update: a caller could otherwise rewind or
-    // forge the audit timestamps. It is read from the stored goal inside the use case.
+    // `createdAt` is intentionally not accepted from the client: the use case reads it from
+    // the stored record so a caller cannot forge or rewind the audit timestamp. Sending it
+    // here is not merely ignored, it is not part of the command at all.
     const updatedGoal = await this.updateGoalUseCase
-      .execute({ id, title, totalAmount, currency, userId, createdAt, finishedAt })
+      .execute({ id, title, totalAmount, currency, userId, finishedAt })
       .catch(next)
     if (updatedGoal) res.status(200).json(updatedGoal)
   };

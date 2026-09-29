@@ -2,8 +2,16 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    "rootDir": "./src",
-    "outDir": "./dist",
+    //
+    // `rootDir`/`outDir` were previously pinned to ./src, which made `tsc --noEmit` fail
+    // with TS6059: src/infrastructure/db/index.ts imports the Prisma client from
+    // ../generated/prisma-client, and that generated code is deliberately outside src. The
+    // emit-only options are removed because the project has no build step at all — it runs
+    // TypeScript directly through tsx, and package.json defines no `build` script. They
+    // could not have worked, and they made the typecheck unusable, which hid real type
+    // errors in src/. See the `typecheck` script in package.json.
+    // "rootDir": "./src",
+    // "outDir": "./dist",
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "esnext",
@@ -15,6 +23,9 @@
     // "lib": ["esnext"],
     // "types": ["node"],
     // and npm install -D @types/node
+    // For browsers:
+    // "lib": ["dom", "dom.iterable", "esnext"],
+    // and npm install -D @types/dom
     // Other Outputs
     "sourceMap": true,
     "declaration": true,
@@ -26,7 +37,7 @@
     // "noImplicitReturns": true,
     // "noImplicitOverride": true,
     // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
+    "noUnusedParameters": true,
     // "noFallthroughCasesInSwitch": true,
     // "noPropertyAccessFromIndexSignature": true,
     // Recommended Options
@@ -37,5 +48,10 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true
-  }
+  },
+  // Scope the program to application source. Without `include` TypeScript defaults to
+  // "**/*", which swept in the generated Prisma client and prisma.config.ts and produced
+  // the TS6059 errors. Files pulled in through imports are still resolved normally.
+  "include": ["src"],
+  "exclude": ["node_modules", "generated", "dist"]
 }

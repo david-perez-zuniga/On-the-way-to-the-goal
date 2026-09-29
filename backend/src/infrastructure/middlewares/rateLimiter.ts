@@ -1,6 +1,4 @@
 import { type Request, type Response, type NextFunction } from 'express'
-import { ValidationError } from '../../domain/errors/AppError'
-
 /**
  * Dependency-free in-memory rate limiter.
  *
@@ -43,7 +41,14 @@ export function rateLimit(options: RateLimitOptions) {
     const timestamps = (hits.get(key) ?? []).filter((t) => now - t < windowMs)
 
     if (timestamps.length >= max) {
-      const retryAfterSeconds = Math.max(1, Math.ceil((windowMs - (now - timestamps[0])) / 1000))
+      // `noUncheckedIndexedAccess` is on, so the oldest entry is not assumed to exist.
+      // It must, because length >= max and max >= 1, but the guard is explicit rather than
+      // asserted.
+      const oldest = timestamps[0]
+      const retryAfterSeconds =
+        oldest === undefined
+          ? Math.max(1, Math.ceil(windowMs / 1000))
+          : Math.max(1, Math.ceil((windowMs - (now - oldest)) / 1000))
       res.setHeader('Retry-After', String(retryAfterSeconds))
       res.status(429).json({
         error: 'Demasiados intentos. Inténtalo de nuevo más tarde.',
@@ -64,5 +69,3 @@ export function rateLimit(options: RateLimitOptions) {
 export function safeKeyPart(value: unknown): string {
   return typeof value === 'string' && value.length <= 254 ? value : 'invalid'
 }
-
-export { ValidationError }

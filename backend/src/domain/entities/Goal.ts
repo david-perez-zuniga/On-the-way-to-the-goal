@@ -1,11 +1,10 @@
 import type { Prisma } from "../../infrastructure/db";
 import { ValidationError } from '../errors/AppError'
+import { assertValidDecimalAmount } from '../valueObjects/amount'
 
-/** Mirrors infrastructure/validation/validators.ts. The domain owns the invariant; the
- *  perimeter enforces it earlier so the client gets a fast, precise 422. */
+/** Title length ceiling. The domain owns the invariant; the perimeter enforces it early
+ *  so the client gets a precise 422 before anything reaches persistence. */
 const TITLE_MAX = 120
-const MIN_MONEY = 0.01
-const MAX_MONEY = 1e12
 
 // Contrato del modelo Goal
 export class Goal {
@@ -36,16 +35,11 @@ export class Goal {
     if (!totalAmount || !totalAmount.isFinite()) {
       throw new ValidationError('El monto total debe ser un número finito', 'totalAmount')
     }
-    const asNumber = totalAmount.toNumber()
-    if (asNumber < MIN_MONEY) {
+    try {
+      assertValidDecimalAmount(totalAmount.toNumber(), 'totalAmount')
+    } catch {
       throw new ValidationError(
-        `El monto total debe ser mayor o igual a ${MIN_MONEY}`,
-        'totalAmount',
-      )
-    }
-    if (asNumber > MAX_MONEY) {
-      throw new ValidationError(
-        `El monto total no puede superar ${MAX_MONEY}`,
+        'El monto total está fuera del rango permitido',
         'totalAmount',
       )
     }

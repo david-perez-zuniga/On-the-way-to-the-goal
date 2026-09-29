@@ -2,13 +2,6 @@ import { Goal } from '../../domain/entities/Goal';
 import { Prisma } from '../../infrastructure/db';
 import { type IGoalRepository } from '../../domain/repositories/IGoalRepository';
 import { type IPaymentRepository } from '../../domain/repositories/IPaymentRepository';
-import { NotFoundError } from '../../domain/errors/AppError';
-import { toGoal } from '../../infrastructure/repositories/goalMapper';
-
-export interface GetUserGoalsUseCaseDeps {
-  goalRepository: IGoalRepository
-  paymentRepository: IPaymentRepository
-}
 
 export interface GoalProgress {
   id: string
@@ -57,5 +50,3 @@ export class GetUserGoalsUseCase {
     return result
   }
 }
-
-export { NotFoundError, toGoal }

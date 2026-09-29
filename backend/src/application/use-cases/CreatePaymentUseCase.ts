@@ -3,7 +3,7 @@ import { Prisma } from "../../infrastructure/db";
 import { type IPaymentRepository } from "../../domain/repositories/IPaymentRepository";
 import type { IGoalRepository } from "../../domain/repositories/IGoalRepository";
 import { NotFoundError, ValidationError } from '../../domain/errors/AppError';
-import { requireMoney, requireCurrency } from '../../infrastructure/validation/validators';
+import { assertValidAmount, InvalidAmountError } from '../../domain/valueObjects/amount';
 
 export interface CreatePaymentDTO{
   deposit: number;
@@ -25,9 +25,19 @@ export class CreatePaymentUseCase {
     const id = crypto.randomUUID();
 
     // Re-validated here as well as at the perimeter. The use case is an application-layer
-    // entry point and must not depend on the caller having already checked the body.
-    const deposit = requireMoney(data.deposit, 'deposit')
-    const currency = requireCurrency(data.currency)
+    // entry point and must not depend on the caller having already checked the body. The
+    // range rule comes from the domain, which the application layer is allowed to depend
+    // on, rather than from the HTTP validators, which it is not.
+    let deposit: number
+    try {
+      deposit = assertValidAmount(data.deposit, 'deposit')
+    } catch (error) {
+      if (error instanceof InvalidAmountError) {
+        throw new ValidationError(error.message, error.field)
+      }
+      throw error
+    }
+    const currency = typeof data.currency === 'string' ? data.currency.toUpperCase() : data.currency
 
     // Scoped by owner: previously the goal was fetched by id alone, so anyone could post a
     // deposit into another user's goal and corrupt their progress.

@@ -7,6 +7,11 @@ import { loginRoutes } from './infrastructure/routes/loginRoutes';
 import { paymentRoutes } from './infrastructure/routes/paymentRoutes';
 import { authenticate } from './infrastructure/middlewares/authMiddleware';
 import { errorHandler, notFoundHandler } from './infrastructure/middlewares/errorHandler';
+import { assertCriticalConfiguration } from './infrastructure/config/env';
+
+// Fail fast on a missing or weak signing key. A misconfigured deployment should refuse to
+// start rather than come up and answer every authenticated request with a confusing error.
+assertCriticalConfiguration();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,7 +30,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/login', loginRoutes)
 app.use('/api/payment', authenticate, paymentRoutes)
 
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', message: '¡Servidor de Camino a la Meta funcionando!' });
 });
 

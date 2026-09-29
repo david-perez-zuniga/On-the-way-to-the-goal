@@ -142,3 +142,89 @@ Verification: delegated per-action worker.
 - Malformed input returns 400/404/409/422 with a message, never a stack trace.
 - A user cannot read, mutate, or delete another user's goal or payment.
 - `console.error` noise from client-caused errors is eliminated.
+
+---
+
+## Phase 2 — loose ends closed and regression re-verified
+
+TDD: not applicable, no test runner exists in this repo (see "Testing" below). Verification was
+behavioural: a black-box HTTP matrix plus `tsc --noEmit`.
+
+### What changed
+
+- `tsconfig.json`: dropped `rootDir`/`outDir` (the generated Prisma client and `prisma.config.ts`
+  legitimately live outside `src`), scoped `include` to `src`, enabled `noUnusedLocals` and
+  `noUnusedParameters`. The 4 pre-existing `TS6059` errors are gone; the project now typechecks
+  clean end to end.
+- `package.json`: added `"typecheck": "tsc --noEmit"`. The check existed but was never runnable.
+- `authMiddleware`: a `ConfigurationError` from `getJwtSecret()` is now forwarded to the error
+  handler instead of being flattened into 401. It was re-introducing the exact outage-masking bug
+  that `7a0440d` removed on the login path: a broken `JWT_SECRET` would have answered every
+  authenticated request with 401 and looked like a fleet of invalid credentials.
+- `env.ts` + `index.ts`: `assertCriticalConfiguration()` runs at boot, so a missing or weak
+  signing key stops the process with a clear message instead of failing request by request.
+- `UserController` + `validators.ts`: **`passwordConfirmation` was never validated.** A typo in
+  the confirmation field silently created the account. Found by the phase-2 matrix, which is the
+  clearest argument for running one.
+- `errorHandler`: a body of literal `null` is valid JSON but not an object, so it no longer
+  reports "no es JSON válido" (false). Split into `INVALID_BODY_SHAPE`; the rate limit is 8
+  requests per window, and the oversize limit is 100kb.
+- `Payment` entity: bare `Error` replaced with `ValidationError`; an out-of-range persisted
+  deposit was reported as a 500, blaming the client for a data-integrity condition.
+- `PrismaUserRepository.findById/findAll`: unimplemented stubs now say which method is missing
+  and report as a genuine server fault, not as an unexplained 500.
+- New `domain/valueObjects/amount.ts`: the monetary range rule moved into the domain.
+  `CreatePaymentUseCase` was importing the HTTP-boundary validators, which inverted the
+  dependency rule (application must not depend on infrastructure). Both layers now share one
+  rule and cannot drift.
+- Removed dead code I had added: `CLIENT_ATTRIBUTABLE`, the `ValidationError` re-export from
+  `rateLimiter`, the `NotFoundError`/`toGoal` re-exports, `GetUserGoalsUseCaseDeps`, and an
+  unused `tryGetJwtSecret`.
+- `GoalController`: no longer parses or forwards `createdAt`; the field is not part of the
+  update contract.
+
+### Corrections to the phase-1 report
+
+- **The stored XSS is not exploitable.** `Goal.title` is rendered as `<h3>{title}</h3>`, a React
+  text child, which React escapes. The frontend contains no `dangerouslySetInnerHTML`, no
+  `innerHTML`, and no `eval`. The payload is stored unencoded, but nothing executes it. Phase 1
+  reported it as live; that was wrong, and the fix was verification, not a code change.
+- The email regex contains a nested quantifier, so it was tested for ReDoS rather than assumed
+  safe: 4.6ms worst case on a 200KB input, and `requireString` caps it at 254 characters.
+  No vulnerability.
+- The `Bearer` regex was already case-insensitive. An apparent 401 there was a defect in my own
+  probe harness, not in the server.
+
+### A harness bug worth recording
+
+The first phase-2 run reported "IDOR B hijacked A's goal". The probe helper took a literal `auth`
+flag and always attached user A's token, so every "cross-user" case was in fact A acting on A.
+The regression was green only because the assertions were not being exercised as written. Fixed
+by making the helper take a token-variable name plus a `RAW:` escape hatch for malformed-header
+cases, and the matrix was re-run from scratch. A green suite means nothing if the suite cannot
+fail.
+
+### Regression result (final, with cross-user tokens)
+
+    5XX:               0
+    non-5XX:           80
+    pass:              80
+    fail:              0
+    leaks:             0
+    rateLimitAt:       8
+    owner still A:     OK   (after mass-assignment attempts)
+
+All 5 IDOR vectors return 404 to the non-owner and 200/201 to the owner. Mass-assignment attempts
+(`id`, `userId`, `createdAt` in the update body) are ignored and ownership is verified intact
+afterwards. `pnpm typecheck` reports 0 errors.
+
+### Testing
+
+`pnpm test` is still the scaffold stub (`Error: no test specified`). The decision not to add a
+runner stands, and this is the standing risk: none of the 80 assertions are protected against
+regression by CI. A `typecheck` script now exists and is the only automated gate in the repo.
+
+### Fixtures
+
+Local dev database truncated to `0 users / 0 goals / 0 payments`; all 4 tables intact. Server
+stopped, port 3000 released, temporary probe artifacts removed.

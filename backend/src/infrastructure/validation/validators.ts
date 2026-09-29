@@ -1,4 +1,5 @@
 import { ValidationError } from '../../domain/errors/AppError'
+import { assertValidAmount, InvalidAmountError, MIN_MONEY, MAX_MONEY } from '../../domain/valueObjects/amount'
 
 /**
  * Perimeter validators.
@@ -8,22 +9,18 @@ import { ValidationError } from '../../domain/errors/AppError'
  * surface later as a TypeError, a Prisma constraint violation, or a Decimal fault.
  *
  * Deliberately dependency-free: no schema library is added to the project.
+ *
+ * The monetary range rules are not restated here. They are imported from the domain, where
+ * they belong as business invariants, so the boundary and the use case cannot drift apart.
  */
-
-/** Upper bound for any monetary amount. Keeps values inside Postgres `numeric(65,30)`
- *  and inside Prisma's Decimal range, so neither overflow (P2020) nor a loss of
- *  precision can occur. Comfortably above any realistic savings-goal total. */
-export const MAX_MONEY = 1e12
-
-/** Lower bound for any monetary amount. The column allows 30 decimal places, so a value
- *  below 1e-30 underflows to exactly 0 on write and then poisons the read path. */
-export const MIN_MONEY = 0.01
 
 const EMAIL_MAX = 254 // RFC 5321 practical maximum
 const PASSWORD_MIN = 8
 const PASSWORD_MAX = 128 // bcrypt truncates beyond 72 bytes; refuse rather than silently truncate
 const TITLE_MAX = 120
 const CURRENCY_MAX = 8
+
+export { MIN_MONEY, MAX_MONEY }
 
 export function requireObjectBody(body: unknown): Record<string, unknown> {
   if (body === null || typeof body !== 'object' || Array.isArray(body)) {
@@ -89,31 +86,43 @@ export function requirePassword(value: unknown, field = 'password'): string {
   return value
 }
 
+export function requirePasswordConfirmation(value: unknown, field = 'passwordConfirmation'): string {
+  if (typeof value !== 'string') {
+    throw new ValidationError(
+      `El campo "${field}" debe ser una cadena de texto`,
+      field,
+    )
+  }
+  // Length bounds mirror requirePassword. The mismatch check itself lives in the caller,
+  // which has both values in scope.
+  if (value.length < PASSWORD_MIN || value.length > PASSWORD_MAX) {
+    throw new ValidationError(
+      `La confirmación no puede tener menos de ${PASSWORD_MIN} ni más de ${PASSWORD_MAX} caracteres`,
+      field,
+    )
+  }
+  if (value.includes('\u0000')) {
+    throw new ValidationError('La confirmación contiene caracteres no permitidos', field)
+  }
+  return value
+}
+
 /**
  * Validates a monetary amount as a plain finite number inside a safe range.
  * Rejects NaN, Infinity, -Infinity, booleans, numeric strings, arrays, objects and null,
  * as well as values that would overflow or underflow the Decimal column.
+ *
+ * Delegates the range rules to the domain so the two layers cannot disagree.
  */
 export function requireMoney(value: unknown, field: string): number {
-  if (typeof value !== 'number' || !Number.isFinite(value)) {
-    throw new ValidationError(
-      `El campo "${field}" debe ser un número finito`,
-      field,
-    )
+  try {
+    return assertValidAmount(value, field)
+  } catch (error) {
+    if (error instanceof InvalidAmountError) {
+      throw new ValidationError(error.message, error.field)
+    }
+    throw error
   }
-  if (value < MIN_MONEY) {
-    throw new ValidationError(
-      `El campo "${field}" debe ser mayor o igual a ${MIN_MONEY}`,
-      field,
-    )
-  }
-  if (value > MAX_MONEY) {
-    throw new ValidationError(
-      `El campo "${field}" excede el máximo permitido de ${MAX_MONEY}`,
-      field,
-    )
-  }
-  return value
 }
 
 export function requireCurrency(value: unknown, field = 'currency'): string {

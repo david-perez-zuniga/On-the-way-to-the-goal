@@ -7,7 +7,7 @@
  * which would make every deployment share a publicly known signing key.
  */
 
-class ConfigurationError extends Error {
+export class ConfigurationError extends Error {
   constructor(message: string) {
     super(message)
     this.name = 'ConfigurationError'
@@ -39,12 +39,10 @@ export function getJwtSecret(): string {
   return cachedSecret
 }
 
-/** Non-throwing probe used by the login path, so a misconfigured server surfaces as a
- *  server fault rather than being reported to the user as invalid credentials. */
-export function tryGetJwtSecret(): string | null {
-  try {
-    return getJwtSecret()
-  } catch {
-    return null
-  }
+/**
+ * Boot-time gate. Throws on a critical misconfiguration so the process exits immediately
+ * with a clear message, instead of starting and failing on every individual request.
+ */
+export function assertCriticalConfiguration(): void {
+  getJwtSecret()
 }

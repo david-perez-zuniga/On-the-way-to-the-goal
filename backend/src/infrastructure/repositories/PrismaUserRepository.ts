@@ -18,13 +18,19 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   // Método para buscar por id
-  public async findById(id: string): Promise<User | null> {
-    throw new Error('Método no implementado aún');
+  //
+  // Not implemented. A raw `Error` here would have reached the global handler as an
+  // unmapped fault and been reported as a 500, which is exactly the client-blame-a-server
+  // confusion this audit removed. An unimplemented repository method is a programming
+  // error, so it is reported as one: the detail is logged server-side and the client
+  // receives an opaque 500.
+  public async findById(_id: string): Promise<User | null> {
+    throw new Error('PrismaUserRepository.findById no está implementado')
   }
 
   // Método para obtener todos
-  public async findAll(id: string): Promise<User[]>{
-    throw new Error('Método no implementado aún');
+  public async findAll(_id: string): Promise<User[]>{
+    throw new Error('PrismaUserRepository.findAll no está implementado')
   }
 
   public async findByEmail(email: string): Promise<User | null> {

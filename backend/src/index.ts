@@ -6,13 +6,19 @@ import { userRoutes } from './infrastructure/routes/userRoutes';
 import { loginRoutes } from './infrastructure/routes/loginRoutes';
 import { paymentRoutes } from './infrastructure/routes/paymentRoutes';
 import { authenticate } from './infrastructure/middlewares/authMiddleware';
+import { errorHandler, notFoundHandler } from './infrastructure/middlewares/errorHandler';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const FRONTEND_URL = process.env.FRONTEND_URL ?? 'http://localhost:5173';
 
+app.disable('x-powered-by');
+
 app.use(cors({ origin: FRONTEND_URL }));
-app.use(express.json());
+
+// Explicit body-size cap. Without this the only backstop is the framework default, and
+// oversized payloads are rejected with an unstructured error rather than a clean 413.
+app.use(express.json({ limit: '100kb' }));
 
 app.use('/api/goals', authenticate, goalRoutes)
 app.use('/api/users', userRoutes)
@@ -22,6 +28,11 @@ app.use('/api/payment', authenticate, paymentRoutes)
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: '¡Servidor de Camino a la Meta funcionando!' });
 });
+
+// Unmatched routes and unhandled errors terminate here, so no request can ever escape
+// as an unstructured 5XX.
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);

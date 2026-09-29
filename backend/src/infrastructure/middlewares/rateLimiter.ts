@@ -16,9 +16,23 @@ export interface RateLimitOptions {
   keyGenerator?: (req: Request) => string
 }
 
+/** Every bucket map created by `rateLimit`, so counters can be cleared between tests. */
+const activeLimiters = new Set<Map<string, number[]>>()
+
+/** Clears all in-memory rate-limit counters. Intended for test isolation. */
+export function resetRateLimits(): void {
+  for (const hits of activeLimiters) {
+    hits.clear()
+  }
+}
+
 export function rateLimit(options: RateLimitOptions) {
   const { max, windowMs, keyGenerator } = options
   const hits = new Map<string, number[]>()
+  // Registered so tests can clear counters between cases. Without this a login performed by
+  // one test would count against the next one, and the suite would fail depending on
+  // execution order rather than on behaviour.
+  activeLimiters.add(hits)
 
   // Bound memory: drop expired buckets periodically rather than growing without limit.
   const sweep = setInterval(() => {

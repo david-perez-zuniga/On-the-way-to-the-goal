@@ -37,6 +37,19 @@ export function requireString(
   if (typeof value !== 'string') {
     throw new ValidationError(`El campo "${field}" debe ser una cadena de texto`, field)
   }
+  // A NUL byte cannot be stored in a Postgres `text` column: the write fails with SQLSTATE
+  // 22021 ("invalid byte sequence for encoding UTF8: 0x00"), which the global handler can only
+  // report as a 500. Any client could therefore trigger a server fault with a single
+  // character. Rejecting C0 control characters here turns that into a 422 and keeps the
+  // "no input produces a 5XX" property true. Tab, newline and carriage return are allowed
+  // because they are legitimate in text; the remaining C0 codes are not.
+  // eslint-disable-next-line no-control-regex
+  if (/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/.test(value)) {
+    throw new ValidationError(
+      `El campo "${field}" contiene caracteres de control no permitidos`,
+      field,
+    )
+  }
   const trimmed = value.trim()
   if (trimmed.length < min) {
     throw new ValidationError(`El campo "${field}" no puede estar vacío`, field)

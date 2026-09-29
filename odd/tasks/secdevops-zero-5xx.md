@@ -228,3 +228,62 @@ regression by CI. A `typecheck` script now exists and is the only automated gate
 
 Local dev database truncated to `0 users / 0 goals / 0 payments`; all 4 tables intact. Server
 stopped, port 3000 released, temporary probe artifacts removed.
+
+---
+
+## Phase 3 — automated test suite (vitest)
+
+The audit's own conclusion was that 80 passing HTTP probes were worthless once the script
+was deleted. This phase makes them permanent.
+
+### Setup
+
+- `vitest` + `supertest`. Tests drive the real `createApp()` against a real Postgres.
+  Nothing is mocked: a mocked authorization check only proves the mock is correct, which is
+  precisely the class of bug this suite exists to catch.
+- `src/app.ts` extracted from `src/index.ts`. Importing `index.ts` called `listen()` as a
+  side effect and occupied a port, so supertest could not mount the app.
+- Dedicated database `db-WayToTheGoal_test`, created from the same migrations.
+  `tests/setup.ts` refuses to run against any other database, so a mistyped `DATABASE_URL`
+  cannot truncate development data.
+- `resetRateLimits()` added to the rate limiter so counters do not leak between tests. The
+  real limits stay in force, so the rate-limit test still tests the real limit.
+- `pnpm test` and `pnpm test:watch`; files run sequentially because they share one database.
+
+### Result
+
+    Test Files  5 passed (5)
+    Tests     165 passed (165)
+
+### A new 5XX found by the suite
+
+Fuzzing with control characters produced a real defect the bash matrix had missed:
+
+    postgres 22021: invalid byte sequence for encoding "UTF8": 0x00
+
+A NUL byte inside `Goal.title` cannot be stored in a Postgres `text` column. The write failed,
+Prisma surfaced it as an unmapped fault, and the global handler reported 500. Any client could
+trigger a server fault with a single character. `requireString` now rejects C0 control
+characters (tab, newline and carriage return stay allowed), turning it into a 422.
+
+Worth recording: the error handler behaved correctly throughout. It returned a generic body to
+the client and logged the detail server-side, with no stack trace leaked. The gap was purely in
+validation, which is an argument for testing the property ("no input produces a 5XX") over
+enumerating individual fields.
+
+### The suite was verified to be able to fail
+
+A green suite that cannot fail is worse than no suite, so both invariants were mutated to
+confirm detection:
+
+- Removing the owner filter from `PrismaGoalRepository` → 5 IDOR tests fail.
+- Removing the C0 guard from `requireString` → the NUL test fails with "status was 500".
+- Restoring both → 165/165 green.
+
+### Notes
+
+- Two failures during development were test bugs, not product bugs: users created in
+  `beforeAll` were deleted by a `beforeEach` truncate, and a NUL byte in the test source made
+  Git treat the file as binary. Both are the kind of defect that reads like a product
+  regression, which is why the mutation check above matters.
+- Isolation was verified: development database still at 0 rows after a full run.

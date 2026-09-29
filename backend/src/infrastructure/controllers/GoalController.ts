@@ -6,7 +6,7 @@ import type { GetGoalProgressUseCase } from '../../application/use-cases/GetGoal
 import type { GetUserGoalsUseCase } from '../../application/use-cases/GetUserGoalsUseCase';
 import { UnauthorizedError } from '../../domain/errors/AppError';
 import {
-  requireObjectBody, requireString, requireMoney, requireCurrency, requireId, requireOptionalDate,
+  requireObjectBody, requireMoney, requireCurrency, requireId, requireOptionalDate, requireTitle,
 } from '../validation/validators';
 
 export class GoalController {
@@ -32,7 +32,7 @@ export class GoalController {
     const userId = this.requireUserId(req)
     const body = requireObjectBody(req.body)
 
-    const title = requireString(body.title, 'title', { max: 120 })
+    const title = requireTitle(body.title, 'title')
     const totalAmount = requireMoney(body.totalAmount, 'totalAmount')
     const currency = requireCurrency(body.currency)
 
@@ -47,7 +47,7 @@ export class GoalController {
     const id = requireId(req.params.id, 'id')
     const body = requireObjectBody(req.body)
 
-    const title = requireString(body.title, 'title', { max: 120 })
+    const title = requireTitle(body.title, 'title')
     const totalAmount = requireMoney(body.totalAmount, 'totalAmount')
     const currency = requireCurrency(body.currency)
     const finishedAt = requireOptionalDate(body.finishedAt, 'finishedAt')

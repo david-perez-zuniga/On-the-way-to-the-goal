@@ -287,3 +287,32 @@ confirm detection:
   Git treat the file as binary. Both are the kind of defect that reads like a product
   regression, which is why the mutation check above matters.
 - Isolation was verified: development database still at 0 rows after a full run.
+
+---
+
+## Phase 4 — neutralise markup in free-text fields
+
+`Goal.title` is stored verbatim. Phase 1 flagged this as stored XSS and phase 2 corrected that:
+it is not currently exploitable, because the title renders as a React text child and React
+escapes. The residual risk was that the guarantee depends on one component in one repository,
+so this phase makes the stored value inert on its own terms.
+
+The treatment differs per field, because the semantics differ:
+
+- **title** (free text) — `<` and `>` are encoded at the boundary. Angle brackets are
+  legitimate in a title ("A > B"), so refusing the input would be wrong; encoding keeps the
+  value recognizable and makes it inert in every renderer, including a future
+  `dangerouslySetInnerHTML`, an email, a PDF or a server-side template.
+- **email** (an address) — refused outright with 422. An address can never legitimately contain
+  angle brackets, so accepting and rewriting one would be worse than rejecting it. The regex
+  was also tightened: it previously accepted `<script>x</script>@example.com`.
+
+`&` is deliberately not encoded. Escaping it would double-encode the literal text `&lt;` a
+user typed, and it is not needed to stop a tag from forming. Verified: `&lt;ya escapado&gt;`
+is stored unchanged, and `Café & Daño` is untouched.
+
+Accepted tradeoff, stated plainly: a title containing `>` is stored as `&gt;`, so a client
+rendering it as text will display the entity. Real titles are unaffected.
+
+`tests/xss.test.ts` (23 cases) was written first and observed failing 19 before the fix, and
+green after. Full suite: 188 passing.

@@ -65,15 +65,47 @@ export function requireString(
 
 export function requireEmail(value: unknown, field = 'email'): string {
   const email = requireString(value, field, { max: EMAIL_MAX })
-  // Deliberately permissive but structural: one @, non-empty local part, dotted domain,
-  // no whitespace or control characters. The real authority on uniqueness is the database.
+  // Deliberately strict but structural. Angle brackets and quotes are rejected outright
+  // rather than encoded: unlike a free-text field, an address can never legitimately
+  // contain them, so accepting and rewriting one would be worse than refusing it.
+  // The real authority on uniqueness is the database.
   if (
-    !/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(email) ||
-    /[\x00-\x1f\x7f]/.test(email)
+    !/^[A-Za-z0-9!#$%&'*+/=?^_`{|}~.-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+$/.test(email) ||
+    email.includes('..')
   ) {
     throw new ValidationError('El formato del email no es válido', field)
   }
   return email
+}
+
+/**
+ * Escapes the two characters that can open an HTML tag.
+ *
+ * Encoding `<` and `>` is sufficient to neutralise any tag construction, which is the whole
+ * of the stored-XSS risk for a text field. Ampersands are deliberately left alone: escaping
+ * them would double-encode the literal text `&lt;` a user typed, and it is not needed to
+ * prevent a tag from forming.
+ */
+function encodeMarkup(value: string): string {
+  return value.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+/**
+ * Validates a free-text field such as a goal title and stores it HTML-encoded.
+ *
+ * The frontend currently escapes on render, so this is defence in depth rather than the
+ * fix for a live vulnerability. It is here because the guarantee should not depend on a
+ * property of one component in one repository: an email, a PDF, a server-side template or a
+ * future `dangerouslySetInnerHTML` would all inherit the risk otherwise.
+ *
+ * Tradeoff, stated plainly: a title containing `<` or `>` is stored encoded, so a client
+ * that renders it as text will show `&lt;`. That is accepted in exchange for the stored
+ * value being inert in every context. Genuine titles ("Vacaciones 2026", "50%") are
+ * unaffected.
+ */
+export function requireTitle(value: unknown, field = 'title'): string {
+  const title = requireString(value, field, { max: TITLE_MAX })
+  return encodeMarkup(title)
 }
 
 export function requirePassword(value: unknown, field = 'password'): string {

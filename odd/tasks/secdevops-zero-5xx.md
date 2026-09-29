@@ -95,16 +95,42 @@ abuse matrix plus a happy-path check on every route, to prove normal behavior st
 Known accepted risk: no persistent regression net exists for future changes.
 
 ## Tasks
-- [ ] T1 `POST /api/users` — validate email/password, kill bcrypt crash
-- [ ] T2 `POST /api/login` — stop 401-masking of real 500s, add rate limit
-- [ ] T3 `POST /api/goals` — validate title/totalAmount/currency
-- [ ] T4 `GET /api/goals/:goalId` — IDOR + unguarded division by zero
-- [ ] T5 `GET /api/payment/goal/:goalId` — IDOR payment-history leak
-- [ ] T6 `POST /api/payment` — IDOR deposit + `1e-320` underflow poison
-- [ ] T7 `PUT /api/goals/:id` — IDOR + ownership transfer via `userId` in data
-- [ ] T8 `DELETE /api/goals/:id` — IDOR
-- [ ] T9 `GET /api/goals` — poison read path
-- [ ] T10 Global error handler, `express.json` limit, fail-closed `JWT_SECRET`
+- [x] T1 `POST /api/users` — validated. 19/19 cases 2XX/4XX. Found and fixed a credential
+      leak: the registration response returned the bcrypt hash.
+- [x] T2 `POST /api/login` — validated, rate-limited, log noise removed. **Found a total
+      authentication bypass**: `JWT_SECRET` was the literal `"SECRETO"` in `.env` and was also
+      the hardcoded fallback in two source files, so any repository reader could forge a
+      token for any userId. Rotated to a 64-char random secret and made the config fail closed.
+      Also fixed `authMiddleware` accepting a raw token with no `Bearer` scheme.
+- [x] T3 `POST /api/goals` — validated. 13/13 abusive cases now 422; previously 6 were 500.
+      `totalAmount: 0` and negatives were being accepted, which armed the division by zero.
+- [x] T4 `GET /api/goals/:goalId` — IDOR closed (404), division by zero guarded on both the
+      write and the read side.
+- [x] T5 `GET /api/payment/goal/:goalId` — IDOR closed. Added an explicit ownership check so
+      "foreign goal" and "empty history" are no longer indistinguishable.
+- [x] T6 `POST /api/payment` — IDOR closed, and the `1e-320` underflow poison is rejected at
+      the boundary and again after currency conversion.
+- [x] T7 `PUT /api/goals/:id` — IDOR and ownership transfer closed. `userId` is no longer
+      writable and `createdAt` is read from the stored record instead of the request body.
+- [x] T8 `DELETE /api/goals/:id` — IDOR closed. First fix returned a lying 204 because
+      `await ....catch(next)` swallowed the rejection and then sent 204 unconditionally;
+      rewritten with try/catch so the 204 is tied to a real delete.
+- [x] T9 `GET /api/goals` — legacy rows that violate an invariant are skipped with a
+      data-integrity warning instead of faulting the whole collection.
+
+## Verification summary
+- Full-surface hostile sweep: **91 requests, 0 responses in the 5XX range.**
+- Server log after the sweep: **0 stack-trace lines.**
+- Cross-user matrix: all 5 IDOR routes answer 404 to a foreign token, while the owner keeps
+  full 200/201/204 function.
+- SQL injection stored verbatim and inert; all 4 tables survive.
+- `tsc --noEmit` reports 0 errors in `src/`. The 4 `TS6059` errors about the generated Prisma
+  client and `prisma.config.ts` sit outside `rootDir` and pre-exist on the original code.
+
+## Commits
+- `7a0440d` — T1 user registration validation, typed domain errors, global error handler
+- `f7c77e0` — T2 JWT forgery bypass closed, Bearer scheme, login rate limit
+- T3–T9 — ownership enforcement, money/title/currency validation, poison prevention
 
 ## Route declaration
 Recon and this plan: inline (bounded reads, decisions only).

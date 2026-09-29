@@ -1,6 +1,8 @@
-import { type Request, type Response } from "express";
+import { type Request, type Response, type NextFunction } from "express";
 import { CreatePaymentUseCase } from "../../application/use-cases/CreatePaymentUseCase";
 import type { GetPaymentHistoryUseCase } from "../../application/use-cases/GetPaymentHistoryUseCase";
+import { UnauthorizedError } from '../../domain/errors/AppError';
+import { requireObjectBody, requireMoney, requireCurrency, requireId } from '../validation/validators';
 
 export class PaymentController {
   constructor(
@@ -8,26 +10,35 @@ export class PaymentController {
     private readonly getPaymentHistoryUseCase: GetPaymentHistoryUseCase
   ){}
 
-  public createPayment = async (req: Request, res: Response): Promise<void> => {
-    try{
-      const {deposit, currency, goalId} = req.body
-      const newDeposit = await this.createPaymentUseCase.execute({deposit, currency, goalId})
-      res.status(201).json(newDeposit)
-    } catch (error){
-      console.error(error);
-      res.status(500).json({error: 'Error interno del servidor al crear un deposito' })
+  private requireUserId(req: Request): string {
+    const userId = req.user?.userId
+    if (!userId) {
+      throw new UnauthorizedError('Usuario no autenticado')
     }
+    return userId
+  }
+
+  public createPayment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = this.requireUserId(req)
+    const body = requireObjectBody(req.body)
+
+    const deposit = requireMoney(body.deposit, 'deposit')
+    const currency = requireCurrency(body.currency)
+    const goalId = requireId(body.goalId, 'goalId')
+
+    const newDeposit = await this.createPaymentUseCase
+      .execute({ deposit, currency, goalId, userId })
+      .catch(next)
+    if (newDeposit) res.status(201).json(newDeposit)
   };
 
-  public getHistory = async(req: Request, res: Response): Promise<void> => {
-    try{
-      const {goalId} = req.params as {goalId: string};
-      const history = await this.getPaymentHistoryUseCase.execute({ goalId })
-      res.status(200).json(history)
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({error: 'Error interno dle servidor al obttener historial'})
-    }
+  public getHistory = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = this.requireUserId(req)
+    const goalId = requireId(req.params.goalId, 'goalId')
+
+    const history = await this.getPaymentHistoryUseCase
+      .execute({ goalId, userId })
+      .catch(next)
+    if (history) res.status(200).json(history)
   };
-  
 }

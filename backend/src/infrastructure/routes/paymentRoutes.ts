@@ -11,7 +11,7 @@ const goalRepository = new PrismaGoalRepository();
 
 const paymentRepository = new PrismaPaymentRepository();
 const createPaymentUseCase = new CreatePaymentUseCase(paymentRepository, goalRepository);
-const getPaymentHistoryUseCase = new GetPaymentHistoryUseCase(paymentRepository)
+const getPaymentHistoryUseCase = new GetPaymentHistoryUseCase(paymentRepository, goalRepository)
 
 const paymentController = new PaymentController(createPaymentUseCase,
                                                 getPaymentHistoryUseCase);

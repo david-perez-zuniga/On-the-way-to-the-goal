@@ -1,9 +1,13 @@
-import { type Request, type Response } from 'express';
+import { type Request, type Response, type NextFunction } from 'express';
 import { CreateGoalUseCase } from '../../application/use-cases/CreateGoalUseCase';
 import { UpdateGoalUseCase } from '../../application/use-cases/UpdateGoalUseCase';
 import { DeleteGoalUseCase } from '../../application/use-cases/DeleteGoalUseCase';
 import type { GetGoalProgressUseCase } from '../../application/use-cases/GetGoalProgressUseCase';
 import type { GetUserGoalsUseCase } from '../../application/use-cases/GetUserGoalsUseCase';
+import { UnauthorizedError } from '../../domain/errors/AppError';
+import {
+  requireObjectBody, requireString, requireMoney, requireCurrency, requireId, requireOptionalDate,
+} from '../validation/validators';
 
 export class GoalController {
   constructor(
@@ -14,74 +18,79 @@ export class GoalController {
     private readonly getUserGoalsUseCase: GetUserGoalsUseCase,
   ) {}
 
-  public createGoal = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const userId = req.user?.userId
-      if (!userId) {
-        res.status(401).json({ error: 'Usuario no autenticado' })
-        return
-      }
-      const { title, totalAmount, currency } = req.body
-      const newGoal = await this.createGoalUseCase.execute({ title, totalAmount, currency, userId })
-      res.status(201).json(newGoal)
-
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error interno del servidor al crear la meta' });
+  /** Identity is taken from the verified token only. It is never read from the request
+   *  body or params, which is what allowed a caller to act as, or reassign, another user. */
+  private requireUserId(req: Request): string {
+    const userId = req.user?.userId
+    if (!userId) {
+      throw new UnauthorizedError('Usuario no autenticado')
     }
+    return userId
+  }
+
+  public createGoal = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = this.requireUserId(req)
+    const body = requireObjectBody(req.body)
+
+    const title = requireString(body.title, 'title', { max: 120 })
+    const totalAmount = requireMoney(body.totalAmount, 'totalAmount')
+    const currency = requireCurrency(body.currency)
+
+    const newGoal = await this.createGoalUseCase
+      .execute({ title, totalAmount, currency, userId })
+      .catch(next)
+    if (newGoal) res.status(201).json(newGoal)
   };
 
-  public updateGoal = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const userId = req.user?.userId
-      if (!userId) {
-        res.status(401).json({ error: 'Usuario no autenticado' })
-        return
-      }
-      const { id } = req.params as {id: string};
-      const { title, totalAmount, currency, createdAt, finishedAt } = req.body;
-      const updatedGoal = await this.updateGoalUseCase.execute({ id, title, totalAmount, currency, userId, createdAt, finishedAt });
-      res.status(200).json(updatedGoal);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error interno del servidor al actualizar la meta' });
-    }
+  public updateGoal = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = this.requireUserId(req)
+    const id = requireId(req.params.id, 'id')
+    const body = requireObjectBody(req.body)
+
+    const title = requireString(body.title, 'title', { max: 120 })
+    const totalAmount = requireMoney(body.totalAmount, 'totalAmount')
+    const currency = requireCurrency(body.currency)
+    const createdAt = requireOptionalDate(body.createdAt, 'createdAt')
+    const finishedAt = requireOptionalDate(body.finishedAt, 'finishedAt')
+
+    // `createdAt` is not client-writable on an update: a caller could otherwise rewind or
+    // forge the audit timestamps. It is read from the stored goal inside the use case.
+    const updatedGoal = await this.updateGoalUseCase
+      .execute({ id, title, totalAmount, currency, userId, createdAt, finishedAt })
+      .catch(next)
+    if (updatedGoal) res.status(200).json(updatedGoal)
   };
 
-  public deleteGoal = async (req: Request, res: Response): Promise<void> => {
+  public deleteGoal = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = this.requireUserId(req)
+    const id = requireId(req.params.id, 'id')
+
+    // Not written as `await ....catch(next); res.status(204).send()`. The use case returns
+    // void, so there is no truthy result to guard on: `catch(next)` would swallow the
+    // rejection, execution would continue, and a 204 would be sent even when the delete was
+    // refused. try/catch keeps the 204 strictly tied to a successful delete.
     try {
-      const { id } = req.params as {id: string};
-      await this.deleteGoalUseCase.execute({ id });
-      res.status(204).send();
+      await this.deleteGoalUseCase.execute({ id, userId })
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error interno del servidor al eliminar la meta' });
+      next(error)
+      return
     }
+    res.status(204).send()
   };
 
-  public getGoalProgress = async (req: Request, res: Response): Promise<void> =>{
-    try{
-      const {goalId} = req.params as {goalId: string};
-      const progress = await this.getGoalProgressUseCase.execute({ goalId });
-      res.status(200).json(progress);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({error: 'Error interno del servidor al obtener progreso'})
-    }
+  public getGoalProgress = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = this.requireUserId(req)
+    const goalId = requireId(req.params.goalId, 'goalId')
+
+    const progress = await this.getGoalProgressUseCase
+      .execute({ goalId, userId })
+      .catch(next)
+    if (progress) res.status(200).json(progress)
   };
 
-  public getUserGoals = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const userId = req.user?.userId
-      if (!userId) {
-        res.status(401).json({ error: 'Usuario no autenticado' })
-        return
-      }
-      const goals = await this.getUserGoalsUseCase.execute(userId)
-      res.status(200).json(goals)
-    } catch (error) {
-      console.error(error)
-      res.status(500).json({ error: 'Error interno del servidor al obtener metas' })
-    }
+  public getUserGoals = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const userId = this.requireUserId(req)
+    const goals = await this.getUserGoalsUseCase.execute(userId).catch(next)
+    if (goals) res.status(200).json(goals)
   };
 }
